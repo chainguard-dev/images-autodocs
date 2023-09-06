@@ -1,0 +1,21 @@
+# action.yml
+name: 'Autodocs for Chainguard Images'
+description: 'Automated reference documentation for Chainguard Images'
+author: 'The Developer Education team at Chainguard'
+branding:
+  icon: 'document'
+  color: 'purple'
+
+inputs:
+  command:
+    description: 'Command to call: ./autodocs [command]'
+    required: false
+    default: build images
+
+outputs:
+  response:
+    description: 'Output'
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
