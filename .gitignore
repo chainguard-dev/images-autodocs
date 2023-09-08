@@ -2,6 +2,5 @@
 .phpunit.result.cache
 .composer/
 vendor/
-bin/
 composer-dev.json
 workdir/changelog.md

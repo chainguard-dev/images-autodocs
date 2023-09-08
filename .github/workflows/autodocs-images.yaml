@@ -36,11 +36,6 @@ jobs:
       - name: Set up gitsign
         uses: chainguard-dev/actions/setup-gitsign@main
 
-      - name: Set up workdir
-        run: |
-          mkdir -p "${{ github.workspace }}/${{ env.WORKDIR }}" && \
-          chmod 777 "${{ github.workspace }}/${{ env.WORKDIR }}"
-
       - name: Set up Chainctl
         uses: chainguard-dev/actions/setup-chainctl@main
         with:
@@ -59,16 +54,16 @@ jobs:
       - name: Fetch images metadata
         run: |
           echo "Fetching variants config...";
-          for image in $(jq -r '.[].repo.name' ${{ github.workspace }}/images-tags.json); do
+          for image in $(jq -r '.[].repo.name' ${{ env.AUTODOCS_CACHE }}/images-tags.json); do
             echo "\n###########################################################################\n"
             echo "Fetching latest tags info for ${image} image"
             echo "\n###########################################################################\n"
-            for tags in $(jq --arg image_repo $image -r 'map(select(.repo.name == $image_repo)) | [.[].tags[].name] | map(select(startswith("latest"))) | .[]' ${{ github.workspace }}/images-tags.json); do
+            for tags in $(jq --arg image_repo $image -r 'map(select(.repo.name == $image_repo)) | [.[].tags[].name] | map(select(startswith("latest"))) | .[]' ${{ env.AUTODOCS_CACHE }}/images-tags.json); do
               for tag in $tags; do
                 cosign verify-attestation $(crane digest --full-ref --platform=linux/amd64 cgr.dev/chainguard/${image}:${tag}) \
                   --certificate-identity="https://github.com/chainguard-images/images/.github/workflows/release.yaml@refs/heads/main" \
                   --certificate-oidc-issuer="https://token.actions.githubusercontent.com" --type="https://apko.dev/image-configuration" \
-                  | jq -r .payload | base64 -d | jq -r '.predicate' > ${{ github.workspace }}/${image}-${tag}.json
+                  | jq -r .payload | base64 -d | jq -r '.predicate' > ${{ env.AUTODOCS_CACHE }}/${image}-${tag}.json
               done
             done
           done
@@ -87,12 +82,8 @@ jobs:
       - name: "Copy updates to main repo"
         run: |
           echo "Copying files..." && \
-          cp -R "${{ env.OUTPUT }}" "${{ github.workspace }}/edu/content/chainguard/chainguard-images" && \
+          cp -R "${{ env.AUTODOCS_OUTPUT }}" "${{ github.workspace }}/edu/content/chainguard/chainguard-images" && \
           echo "Finished copy"
-
-      - name: "Copy updated changelog to autodocs folder"
-        run: |
-          mv "${{ env.AUTODOCS_CHANGELOG_FILE }}" "${{ github.workspace }}/edu/autodocs"
 
       - name: "Get latest changelog"
         run: |
@@ -100,6 +91,10 @@ jobs:
           echo "CHANGELOG<<$EOF" >> $GITHUB_ENV
           echo "`cat "${{ env.AUTODOCS_CHANGELOG_FILE }}" | sed '1,/#/!d' | sed -n '/#/!p'`" >> $GITHUB_ENV
           echo "$EOF" >> $GITHUB_ENV
+
+      - name: "Copy updated changelog to autodocs folder"
+        run: |
+          mv "${{ env.AUTODOCS_CHANGELOG_FILE }}" "${{ github.workspace }}/edu/autodocs"
 
       - name: Create a PR
         uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04 # v4.2.3
