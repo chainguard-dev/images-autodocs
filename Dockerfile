@@ -7,6 +7,5 @@ RUN composer install --no-progress --no-dev --prefer-dist
 
 FROM cgr.dev/chainguard/php:latest
 COPY --from=builder /app /app
-
 ENTRYPOINT [ "php", "/app/autodocs" ]
 

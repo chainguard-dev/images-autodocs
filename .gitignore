@@ -4,3 +4,4 @@
 vendor/
 bin/
 composer-dev.json
+workdir/changelog.md
