@@ -114,7 +114,7 @@ jobs:
 
       - name: "Send notification to Slack"
         if: ${{ steps.cpr.outputs.pull-request-number }}
-        uses: chainguard-dev/deved-autodocs@1.8.0
+        uses: chainguard-dev/images-autodocs@0.1.0
         with:
           command: notify pullrequest
         env:
