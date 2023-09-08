@@ -4,15 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "71daa218615ae283a2eadd5b66cc2a0b",
+    "content-hash": "803c568ae94a025d984aebd2c593af36",
     "packages": [
         {
             "name": "erikaheidi/autodocs",
-            "version": "dev-main",
+            "version": "0.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/erikaheidi/autodocs.git",
+                "reference": "3883b2f50a1b828ffd20e25d5f33bf6ec4874534"
+            },
             "dist": {
-                "type": "path",
-                "url": "../autodocs",
-                "reference": "4a15ebe6f3fb0b417056abb476c34b854a9e8b76"
+                "type": "zip",
+                "url": "https://api.github.com/repos/erikaheidi/autodocs/zipball/3883b2f50a1b828ffd20e25d5f33bf6ec4874534",
+                "reference": "3883b2f50a1b828ffd20e25d5f33bf6ec4874534",
+                "shasum": ""
             },
             "require": {
                 "minicli/minicli": "^4.2",
@@ -28,6 +34,7 @@
                     "Autodocs\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -37,9 +44,11 @@
                 "cli",
                 "documentation"
             ],
-            "transport-options": {
-                "relative": true
-            }
+            "support": {
+                "issues": "https://github.com/erikaheidi/autodocs/issues",
+                "source": "https://github.com/erikaheidi/autodocs/tree/0.2.0"
+            },
+            "time": "2023-09-08T12:27:06+00:00"
         },
         {
             "name": "minicli/command-help",
@@ -3114,9 +3123,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "erikaheidi/autodocs": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
