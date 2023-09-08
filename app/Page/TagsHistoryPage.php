@@ -1,9 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Page;
 
 use Autodocs\Mark;
 use Autodocs\Page\ReferencePage;
+use Exception;
+use DateTime;
 
 class TagsHistoryPage extends ReferencePage
 {
@@ -20,24 +24,24 @@ class TagsHistoryPage extends ReferencePage
 
     public function getSavePath(): string
     {
-        return $this->image . '/tags_history.md';
+        return $this->image.'/tags_history.md';
     }
 
     public function getContent(): string
     {
         return $this->autodocs->stencil->applyTemplate('image_tags_page', [
-            'title' =>"$this->image Image Tags History",
-            'description' => "Image Tags and History for the $this->image Chainguard Image",
+            'title' => "{$this->image} Image Tags History",
+            'description' => "Image Tags and History for the {$this->image} Chainguard Image",
             'content' => $this->getTagsTable(),
         ]);
     }
 
     public function orderTags(array $tag1, array $tag2): int
     {
-        $date1 = new \DateTime($tag1['lastUpdated']);
-        $date2 = new \DateTime($tag2['lastUpdated']);
+        $date1 = new DateTime($tag1['lastUpdated']);
+        $date2 = new DateTime($tag2['lastUpdated']);
 
-        if ($date1 == $date2) {
+        if ($date1 === $date2) {
             return 0;
         }
 
@@ -48,7 +52,7 @@ class TagsHistoryPage extends ReferencePage
     {
         try {
             $imagesList = $this->autodocs->getDataFeed('images-tags.json');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return "";
         }
 
@@ -80,8 +84,8 @@ class TagsHistoryPage extends ReferencePage
         //prepare table
         $rows = [];
         foreach ($groupedTags as $digest => $tags) {
-            $now = new \DateTime();
-            $update = new \DateTime($tags[0]['lastUpdated']);
+            $now = new DateTime();
+            $update = new DateTime($tags[0]['lastUpdated']);
             $interval = $now->diff($update);
 
             //suppress tags older than 1 month
@@ -92,17 +96,17 @@ class TagsHistoryPage extends ReferencePage
             $tagsList = "";
             foreach ($tags as $tag) {
                 //skip other tags when a set is provided
-                if (count($onlyTags) AND !in_array($tag['name'], $onlyTags)) {
+                if (count($onlyTags) && ! in_array($tag['name'], $onlyTags)) {
                     continue;
                 }
-                $tagsList .= ' `' . $tag['name'] . '`';
+                $tagsList .= ' `'.$tag['name'].'`';
             }
 
-            if ($tagsList != "") {
+            if ("" !== $tagsList) {
                 $rows[] = [
                     $tagsList,
                     $update->format('F jS'),
-                    "`$digest`"
+                    "`{$digest}`"
                 ];
             }
         }

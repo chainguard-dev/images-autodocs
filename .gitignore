@@ -3,4 +3,4 @@
 .composer/
 vendor/
 bin/
-composer.lock
+composer-dev.json

@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Page;
 
 use Autodocs\DataFeed\JsonDataFeed;
 use Autodocs\Mark;
 use Autodocs\Page\ReferencePage;
+use Exception;
 
 class VariantsPage extends ReferencePage
 {
@@ -22,7 +25,7 @@ class VariantsPage extends ReferencePage
 
     public function getSavePath(): string
     {
-        return $this->image . '/image_specs.md';
+        return $this->image.'/image_specs.md';
     }
 
     public function getImageVariants(): array
@@ -31,7 +34,7 @@ class VariantsPage extends ReferencePage
         $variantsList = $this->autodocs->getDataFeedsList($this->image);
         foreach ($variantsList as $variantFeed) {
             $variantName = str_replace(".json", "", $variantFeed);
-            $variantName = str_replace($this->image . '-', "", $variantName);
+            $variantName = str_replace($this->image.'-', "", $variantName);
             $feed = $this->autodocs->getDataFeed($variantFeed);
             if (count($feed->json)) {
                 $variants[$variantName] = $feed;
@@ -42,7 +45,7 @@ class VariantsPage extends ReferencePage
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function getContent(): string
     {
@@ -67,26 +70,25 @@ class VariantsPage extends ReferencePage
             $columns[] = [
                 $this->getDefaultUser($config),
                 $this->getEntrypoint($config),
-                $config['cmd'] ? '`' . $config['cmd'] . '`' : "not specified",
-                $config['work-dir'] ? '`' . $config['work-dir'] . '`' : "not specified",
+                $config['cmd'] ? '`'.$config['cmd'].'`' : "not specified",
+                $config['work-dir'] ? '`'.$config['work-dir'].'`' : "not specified",
                 $this->hasApk($config),
                 $this->hasShell($config),
             ];
 
             //build packages array
-            foreach ($config['contents']['packages'] as $dep)
-            {
+            foreach ($config['contents']['packages'] as $dep) {
                 $split = explode("=", $dep);
                 $packages[$split[0]][] = $variant;
             }
         }
 
         $content .= $this->getVariantsSection($this->image, $variants, $columns, $headers);
-        $content .= "\n" . $this->getDependenciesSection($packages, $headers);
+        $content .= "\n".$this->getDependenciesSection($packages, $headers);
 
         return $this->autodocs->stencil->applyTemplate('image_specs_page', [
             'title' => $this->image,
-            'description' => "Detailed information about the public $this->image Chainguard Image variants",
+            'description' => "Detailed information about the public {$this->image} Chainguard Image variants",
             'content' => $content,
         ]);
     }
@@ -95,10 +97,10 @@ class VariantsPage extends ReferencePage
     {
         $entrypoint = "not specified";
         if ($yamlConfig['entrypoint']['command']) {
-            $entrypoint = '`' . $yamlConfig['entrypoint']['command'] . '`';
+            $entrypoint = '`'.$yamlConfig['entrypoint']['command'].'`';
         }
 
-        if (isset($yamlConfig['entrypoint']['type']) && $yamlConfig['entrypoint']['type'] === "service-bundle") {
+        if (isset($yamlConfig['entrypoint']['type']) && "service-bundle" === $yamlConfig['entrypoint']['type']) {
             $entrypoint = "Service Bundle";
         }
 
@@ -117,10 +119,10 @@ class VariantsPage extends ReferencePage
 
     public function getDefaultUser(array $yamlConfig): string
     {
-        if (!isset($yamlConfig['accounts']['users']) ||
-            !isset($yamlConfig['accounts']['run-as']) ||
-            $yamlConfig['accounts']['run-as'] == 0 ||
-            $yamlConfig['accounts']['run-as'] == ""
+        if ( ! isset($yamlConfig['accounts']['users']) ||
+            ! isset($yamlConfig['accounts']['run-as']) ||
+            0 === $yamlConfig['accounts']['run-as'] ||
+            "" === $yamlConfig['accounts']['run-as']
         ) {
             return '`root`';
         }
@@ -130,28 +132,28 @@ class VariantsPage extends ReferencePage
 
         //locate user
         foreach ($yamlConfig['accounts']['users'] as $user) {
-            if ($user['uid'] == $uid) {
+            if ($user['uid'] === $uid) {
                 $runAs = $user['username'];
                 break;
             }
         }
 
-        if (!$runAs) {
+        if ( ! $runAs) {
             $runAs = $uid;
         }
 
-        return "`$runAs`";
+        return "`{$runAs}`";
     }
 
     public function hasPackage(string|array $packageName, array $packages): bool
     {
-        $result = array_filter($packages, function($value) use ($packageName) {
+        $result = array_filter($packages, function ($value) use ($packageName) {
             $split = explode('=', $value);
             if (is_array($packageName)) {
                 return in_array($split[0], $packageName);
             }
 
-            return $split[0] == $packageName;
+            return $split[0] === $packageName;
         });
 
         return (bool)count($result);
@@ -162,12 +164,13 @@ class VariantsPage extends ReferencePage
         $content = "## Variants Compared\n";
 
         //check variants
-        $number = (sizeof($variants) === 1) ? "one public variant" : sizeof($variants) . " public variants";
+        $number = (1 === sizeof($variants)) ? "one public variant" : sizeof($variants)." public variants";
 
-        $content .= sprintf("The **%s** Chainguard Image currently has %s: %s",
+        $content .= sprintf(
+            "The **%s** Chainguard Image currently has %s: %s",
             $image,
             $number,
-            "\n\n- `" . implode("`\n- `", array_keys($variants)) . "`\n\n"
+            "\n\n- `".implode("`\n- `", array_keys($variants))."`\n\n"
         );
 
         $content .= "The table has detailed information about each of these variants.\n\n";
@@ -182,7 +185,7 @@ class VariantsPage extends ReferencePage
         }
 
         $content .= Mark::table($tableRows, $headers);
-        $content .= "\nCheck the [tags history page](/chainguard/chainguard-images/reference/" . $image . "/tags_history/) for the full list of available tags.";
+        $content .= "\nCheck the [tags history page](/chainguard/chainguard-images/reference/".$image."/tags_history/) for the full list of available tags.";
 
         return $content;
     }
@@ -195,7 +198,7 @@ class VariantsPage extends ReferencePage
         $tableRows = [];
         $row = [];
         foreach ($packages as $name => $package) {
-            $row[] = '`' . $name . '`';
+            $row[] = '`'.$name.'`';
             for ($i = 1; $i < sizeof($headers); $i++) {
                 $row[] = in_array($headers[$i], $package) ? "X" : " ";
             }

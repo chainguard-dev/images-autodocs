@@ -1,6 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Page;
+
 use Autodocs\Page\ReferencePage;
 use Minicli\FileNotFoundException;
 
@@ -9,28 +12,37 @@ class OverviewPage extends ReferencePage
     public string $image;
     public string $readme;
 
+    /**
+     * @throws FileNotFoundException
+     */
     public function loadData(array $parameters = []): void
     {
         $this->image = $parameters['image'];
-        $sources = $this->autodocs->config['images_sources'];
-        $readme = "";
+        $readme = $this->findReadme($this->image);
 
-        foreach ($sources as $sourcePath) {
-            if (is_dir($sourcePath . '/' . $this->image)) {
-                $readme = file_get_contents($sourcePath . '/' . $this->image . '/README.md');
-                break;
-            }
+        if ("" === $readme) {
+            $readme = $this->autodocs->stencil->applyTemplate('image_overview_fallback', [
+                'image' => $this->image
+            ]);
         }
 
-        if ($readme == "") {
-            //return a default template readme
-            $readme = "Overview of $this->image Chainguard Image";
-        }
-
-        $readme = str_ireplace("# $readme", "", $readme);
+        $readme = str_ireplace("# {$readme}", "", $readme);
         $readme = preg_replace('/<!--(.*)-->(.*)<!--(.*)-->/Uis', '', $readme);
 
         $this->readme = $readme;
+    }
+
+    public function findReadme(string $image): string
+    {
+        $readme = "";
+        $sources = $this->autodocs->config['images_sources'];
+        foreach ($sources as $sourcePath) {
+            if (is_dir($sourcePath.'/'.$image)) {
+                $readme = file_get_contents($sourcePath.'/'.$image.'/README.md');
+                break;
+            }
+        }
+        return $readme;
     }
 
     public function getName(): string
@@ -40,7 +52,7 @@ class OverviewPage extends ReferencePage
 
     public function getSavePath(): string
     {
-        return $this->image . '/overview.md';
+        return $this->image.'/overview.md';
     }
 
     /**

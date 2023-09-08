@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Page;
 
 use Autodocs\Page\ReferencePage;
@@ -20,7 +22,7 @@ class ProvenancePage extends ReferencePage
 
     public function getSavePath(): string
     {
-        return $this->image . '/provenance_info.md';
+        return $this->image.'/provenance_info.md';
     }
 
     /**
@@ -30,7 +32,7 @@ class ProvenancePage extends ReferencePage
     {
         return $this->autodocs->stencil->applyTemplate('image_provenance_page', [
             'title' => $this->image,
-            'description' => "Provenance information for $this->image Chainguard Image"
+            'description' => "Provenance information for {$this->image} Chainguard Image"
         ]);
     }
 }
