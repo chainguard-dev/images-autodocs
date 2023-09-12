@@ -1,4 +1,4 @@
-Minimal {{ image }} images with nightly builds.
+Minimal **{{ image }}** images with nightly builds.
 
 ## Get it!
 
