@@ -1,5 +1,8 @@
+![Autobots Autodocs](workdir/autod.png)
 # Images Autodocs
-This repository contains automation that generates reference documentation for [Chainguard Images](https://github.com/chainguard-images/images) in [Academy](https://edu.chainguard.dev).
+[![Build Chainguard Images Reference Docs](https://github.com/chainguard-dev/images-autodocs/actions/workflows/autodocs-images.yaml/badge.svg)](https://github.com/chainguard-dev/images-autodocs/actions/workflows/autodocs-images.yaml)
+
+This repository contains automation pipelines to generate the [reference documentation for Chainguard Images(https://edu.chainguard.dev/chainguard/chainguard-images/reference/) in [Chainguard Academy](https://edu.chainguard.dev).
 
 ## GitHub Action
 This application runs as a GitHub Action workflow, but can also be executed in a local environment as long as you prepare data sources accordingly.
