@@ -30,7 +30,7 @@ class TagsHistoryPage extends ReferencePage
     public function getContent(): string
     {
         return $this->autodocs->stencil->applyTemplate('image_tags_page', [
-            'title' => "{$this->image} Image Tags History",
+            'title' => $this->image,
             'description' => "Image Tags and History for the {$this->image} Chainguard Image",
             'content' => $this->getTagsTable(),
         ]);

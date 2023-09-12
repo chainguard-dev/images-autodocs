@@ -1,5 +1,4 @@
-Overview of `{{ image }}` Chainguard Image
-
+Minimal {{ image }} images with nightly builds.
 
 ## Get it!
 

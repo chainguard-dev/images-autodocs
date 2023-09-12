@@ -52,7 +52,7 @@ class OverviewPage extends ReferencePage
 
     public function getSavePath(): string
     {
-        return $this->image.'/overview.md';
+        return $this->image.'/_index.md';
     }
 
     /**
