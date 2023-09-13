@@ -13,6 +13,22 @@ class VariantsPage extends ReferencePage
 {
     public string $image;
 
+    public static array $allowedTags = [
+        'latest',
+        'latest-dev',
+        'latest-debug',
+        'latest-fpm',
+        'latest-fpm-dev',
+        'latest-glibc',
+        'latest-glibc-dev',
+        'latest-musl',
+        'latest-musl-dev',
+        'latest-root',
+        'latest-root-dev',
+        'latest-nonroot',
+        'latest-nonroot-dev'
+    ];
+
     public function loadData(array $parameters = []): void
     {
         $this->image = $parameters['image'];
@@ -30,18 +46,22 @@ class VariantsPage extends ReferencePage
 
     public function getImageVariants(): array
     {
-        $variants = [];
-        $variantsList = $this->autodocs->getDataFeedsList($this->image);
-        foreach ($variantsList as $variantFeed) {
-            $variantName = str_replace(".json", "", $variantFeed);
+        $variantsList = [];
+        $dataFeeds = $this->autodocs->dataFeeds;
+
+        /** @var JsonDataFeed $dataFeed */
+        foreach ($dataFeeds as $name => $dataFeed) {
+            $variantName = str_replace(".json", "", $name);
             $variantName = str_replace($this->image.'-', "", $variantName);
-            $feed = $this->autodocs->getDataFeed($variantFeed);
-            if (count($feed->json)) {
-                $variants[$variantName] = $feed;
+            if (in_array($variantName, self::$allowedTags)) {
+                $dataFeed->loadFile($this->autodocs->config['cache_dir'].'/'.$name);
+                if ($dataFeed->json) {
+                    $variantsList[$variantName] = $dataFeed;
+                }
             }
         }
 
-        return $variants;
+        return $variantsList;
     }
 
     /**
@@ -121,7 +141,7 @@ class VariantsPage extends ReferencePage
     {
         if ( ! isset($yamlConfig['accounts']['users']) ||
             ! isset($yamlConfig['accounts']['run-as']) ||
-            0 === $yamlConfig['accounts']['run-as'] ||
+            "0" === $yamlConfig['accounts']['run-as'] ||
             "" === $yamlConfig['accounts']['run-as']
         ) {
             return '`root`';
@@ -132,7 +152,7 @@ class VariantsPage extends ReferencePage
 
         //locate user
         foreach ($yamlConfig['accounts']['users'] as $user) {
-            if ($user['uid'] === $uid) {
+            if ((string)$user['uid'] === $uid) {
                 $runAs = $user['username'];
                 break;
             }
