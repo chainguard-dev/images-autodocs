@@ -17,7 +17,7 @@ class ImagesController extends CommandController
     {
         /** @var AutodocsService $autodocs */
         $autodocs = $this->getApp()->autodocs;
-        $changelog = new Changelog($autodocs->config['output']);
+        $changelog = new Changelog($autodocs->config['changelog']);
         $changelog->capture();
 
         //get list of images
@@ -43,7 +43,7 @@ class ImagesController extends CommandController
         }
 
         //Build ChangelogPage
-        $changelog->makeDiff();
+        $changelog->makeDiff($autodocs->config['output']);
         $this->info("Finished building.");
         $this->success($changelog->getChangesSummary(), true);
         if ($changelog->hasChanges()) {
