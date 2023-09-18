@@ -79,7 +79,7 @@ jobs:
           chmod 777 "${{ github.workspace }}/changelog.md"
 
       - name: Update the reference docs for Chainguard Images
-        uses: chainguard-dev/images-autodocs@1.0.1
+        uses: chainguard-dev/images-autodocs@1.0.2
         with:
           command: build images
 
@@ -118,7 +118,7 @@ jobs:
 
       - name: "Send notification to Slack"
         if: ${{ steps.cpr.outputs.pull-request-number }}
-        uses: chainguard-dev/images-autodocs@1.0.1
+        uses: chainguard-dev/images-autodocs@1.0.2
         with:
           command: notify pullrequest
         env:
