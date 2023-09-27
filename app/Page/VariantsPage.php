@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Page;
 
 use Autodocs\DataFeed\JsonDataFeed;
-use Autodocs\Exception\NotFoundException;
 use Autodocs\Mark;
 use Autodocs\Page\ReferencePage;
 use Exception;
+use TypeError;
 
 class VariantsPage extends ReferencePage
 {
@@ -51,12 +51,12 @@ class VariantsPage extends ReferencePage
         $dataFeeds = $this->autodocs->dataFeeds;
         /** @var JsonDataFeed $dataFeed */
         foreach ($dataFeeds as $name => $dataFeed) {
-            if (str_starts_with($name, $this->image . '.latest')) {
+            if (str_starts_with($name, $this->image.'.latest')) {
                 list($imageName, $variantName, $extension) = explode('.', $name);
                 try {
-                    $dataFeed->loadFile($this->autodocs->config['cache_dir'] . '/' . $name);
+                    $dataFeed->loadFile($this->autodocs->config['cache_dir'].'/'.$name);
                     $variantsList[$variantName] = $dataFeed;
-                } catch (\TypeError $e) {
+                } catch (TypeError $e) {
                     //json might have issues. skip
                 }
             }
