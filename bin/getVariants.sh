@@ -12,7 +12,7 @@ for image in $(jq -r '.[].repo.name' ${OUTPUT_PATH}/images-tags.json); do
       cosign verify-attestation $(crane digest --full-ref --platform=linux/amd64 cgr.dev/chainguard/${image}:${tag}) \
         --certificate-identity="https://github.com/chainguard-images/images/.github/workflows/release.yaml@refs/heads/main" \
         --certificate-oidc-issuer="https://token.actions.githubusercontent.com" --type="https://apko.dev/image-configuration" \
-        | jq -r .payload | base64 -d | jq -r '.predicate' > ${OUTPUT_PATH}/${image}-${tag}.json
+        2>/dev/null | jq -rs '.[0].payload' | base64 -d > ${OUTPUT_PATH}/${image}.${tag}.json
     done
   done
 done

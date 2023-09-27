@@ -8,6 +8,7 @@ use Autodocs\DataFeed\JsonDataFeed;
 use Autodocs\Mark;
 use Autodocs\Page\ReferencePage;
 use Exception;
+use TypeError;
 
 class VariantsPage extends ReferencePage
 {
@@ -48,15 +49,15 @@ class VariantsPage extends ReferencePage
     {
         $variantsList = [];
         $dataFeeds = $this->autodocs->dataFeeds;
-
         /** @var JsonDataFeed $dataFeed */
         foreach ($dataFeeds as $name => $dataFeed) {
-            $variantName = str_replace(".json", "", $name);
-            $variantName = str_replace($this->image.'-', "", $variantName);
-            if (in_array($variantName, self::$allowedTags)) {
-                $dataFeed->loadFile($this->autodocs->config['cache_dir'].'/'.$name);
-                if ($dataFeed->json) {
+            if (str_starts_with($name, $this->image.'.latest')) {
+                list($imageName, $variantName, $extension) = explode('.', $name);
+                try {
+                    $dataFeed->loadFile($this->autodocs->config['cache_dir'].'/'.$name);
                     $variantsList[$variantName] = $dataFeed;
+                } catch (TypeError $e) {
+                    //json might have issues. skip
                 }
             }
         }
@@ -85,7 +86,7 @@ class VariantsPage extends ReferencePage
         $packages = [];
         /** @var JsonDataFeed $variantFeed */
         foreach ($variants as $variant => $variantFeed) {
-            $config = $variantFeed->json;
+            $config = $variantFeed->json['predicate'];
             $headers[] = $variant;
             $columns[] = [
                 $this->getDefaultUser($config),
