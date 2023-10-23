@@ -12,7 +12,7 @@ env:
   AUTODOCS_CACHE: "${{ github.workspace }}/cache"
   AUTODOCS_CHANGELOG: "${{ github.workspace }}/edu/content/chainguard/chainguard-images/reference"
   AUTODOCS_CHANGELOG_FILE: "${{ github.workspace }}/changelog.md"
-  AUTODOCS_IGNORE_IMAGES: "alpine-base:k3s-images:sdk:spire:musl-dynamic:nri-kube-events:nri-kubernetes:nri-prometheus:gcc-musl"
+  AUTODOCS_IGNORE_IMAGES: "alpine-base:k3s-images:k3s-embedded:sdk:spire:musl-dynamic:nri-kube-events:nri-kubernetes:nri-prometheus:gcc-musl"
 jobs:
   main:
     permissions:
