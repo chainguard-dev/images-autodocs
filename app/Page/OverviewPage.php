@@ -34,6 +34,7 @@ class OverviewPage extends ReferencePage
 
     public function findReadme(string $image): string
     {
+        $dataFeeds = $this->autodocs->dataFeeds;
         $readme = "";
         $sources = $this->autodocs->config['images_sources'];
         foreach ($sources as $sourcePath) {
@@ -41,6 +42,13 @@ class OverviewPage extends ReferencePage
                 $readme = file_get_contents($sourcePath.'/'.$image.'/README.md');
                 break;
             }
+            # didn't find an image:readme 1:1 directory mapping, so look at image annotation for correct dir
+            $fName = $image.".latest.json";
+            $dataFeeds[$fName]->loadFile($this->autodocs->config['cache_dir'].'/'.$fName);
+            $image_source = $dataFeeds[$fName]->json["predicate"]["annotations"]["org.opencontainers.image.source"];
+            $image_source = explode("/", $image_source);
+            $image = end($image_source);
+            $readme = file_get_contents($sourcePath.'/'.$image.'/README.md');
         }
         return $readme;
     }
