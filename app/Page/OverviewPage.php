@@ -48,7 +48,11 @@ class OverviewPage extends ReferencePage
             $image_source = $dataFeeds[$fName]->json["predicate"]["annotations"]["org.opencontainers.image.source"];
             $image_source = explode("/", $image_source);
             $image = end($image_source);
-            $readme = file_get_contents($sourcePath.'/'.$image.'/README.md');
+
+            $parentReadme = $sourcePath.'/'.$image.'/README.md';
+            if (is_file($parentReadme)) {
+                $readme = file_get_contents($parentReadme);
+            }
         }
         return $readme;
     }
