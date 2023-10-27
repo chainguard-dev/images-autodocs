@@ -53,15 +53,16 @@ class ChangelogPage extends ReferencePage
         }
 
         $newChangelog = "# ".date('Y-m-d')."\n";
+        $newChangelog .= $this->diff['summary'];
         if (count($newImages)) {
-            $newChangelog .= "New images added:\n\n- ";
+            $newChangelog .= "\n\nNew images added:\n\n- ";
             $newChangelog .= implode("\n- ", $newImages);
         }
 
-        if (count($changed)) {
+        /*if (count($changed)) {
             $newChangelog .= "\n\nUpdated Docs:\n\n- ";
             $newChangelog .= implode("\n- ", $changed);
-        }
+        }*/
 
         return $newChangelog."\n\n".$changelog;
     }

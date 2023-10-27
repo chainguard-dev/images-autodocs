@@ -49,7 +49,7 @@ class ImagesController extends CommandController
         if ($changelog->hasChanges()) {
             $this->out("\nBuilding changelog...\n");
             $changelogPage = new ChangelogPage($autodocs);
-            $changelogPage->loadData(['newFiles' => $changelog->newFiles, 'changedFiles' => $changelog->changedFiles]);
+            $changelogPage->loadData(['newFiles' => $changelog->newFiles, 'changedFiles' => $changelog->changedFiles, 'summary' => $changelog->getChangesSummary()]);
             $saveChangelog = $changelogPage->getSavePath();
             $autodocs->storage->saveFile($saveChangelog, $changelogPage->getContent());
             $this->success("Changelog saved to {$saveChangelog}");
