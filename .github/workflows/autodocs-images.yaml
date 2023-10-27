@@ -10,9 +10,9 @@ env:
   AUTODOCS_SOURCES: "${{ github.workspace }}/images/images"
   AUTODOCS_OUTPUT: "${{ github.workspace }}/reference"
   AUTODOCS_CACHE: "${{ github.workspace }}/cache"
-  AUTODOCS_CHANGELOG: "${{ github.workspace }}/edu/content/chainguard/chainguard-images/reference"
+  AUTODOCS_CHANGELOG: "${{ github.workspace }}/reference"
   AUTODOCS_CHANGELOG_FILE: "${{ github.workspace }}/changelog.md"
-  AUTODOCS_IGNORE_IMAGES: "alpine-base:k3s-images:k3s-embedded:sdk:spire:musl-dynamic:nri-kube-events:nri-kubernetes:nri-prometheus:gcc-musl"
+  AUTODOCS_IGNORE_IMAGES: "alpine-base:k3s-images:k3s-embedded:source-controller:sdk:spire:musl-dynamic:nri-kube-events:nri-kubernetes:nri-prometheus:gcc-musl"
 jobs:
   main:
     permissions:
@@ -21,6 +21,9 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
+      ############################################################################################
+      # Set up Build Environment
+      ############################################################################################
       - name: Set up workdir
         run: |
           mkdir -m 777 -p "${{ env.AUTODOCS_OUTPUT }}" "${{ env.AUTODOCS_CACHE }}"
@@ -51,6 +54,9 @@ jobs:
       - name: Set up Cosign
         uses: sigstore/cosign-installer@v3.1.1
 
+      ############################################################################################
+      # Fetch Image Metadata
+      ############################################################################################
       - name: Fetch images list
         run: |
           chainctl img ls --group "${{ secrets.CHAINCTL_GROUP_PUBLIC }}" -ojson > "${{ env.AUTODOCS_CACHE }}/images-tags.json"
@@ -72,17 +78,31 @@ jobs:
             done
           done
 
+      ############################################################################################
+      # Set up Changelog
+      ############################################################################################
       - name: Copy current changelog to workdir
         run: |
           cp "${{ github.workspace }}/edu/autodocs/changelog.md" \
           "${{ github.workspace }}/changelog.md" && \
           chmod 777 "${{ github.workspace }}/changelog.md"
 
+      - name: Copy current reference docs to workdir (required for changelog)
+        run: |
+          cp -R "${{ github.workspace }}/edu/content/chainguard/chainguard-images/reference" "${{ github.workspace }}" && \
+          chmod -R 777 "${{ github.workspace }}/reference"
+
+      ############################################################################################
+      # Generate Docs
+      ############################################################################################
       - name: Update the reference docs for Chainguard Images
-        uses: chainguard-dev/images-autodocs@1.1.1
+        uses: chainguard-dev/images-autodocs@1.1.2
         with:
           command: build images
 
+      ############################################################################################
+      # Copy Updated Docs
+      ############################################################################################
       - name: "Copy updates to main repo"
         run: |
           echo "Copying files..." && \
@@ -100,6 +120,9 @@ jobs:
         run: |
           mv "${{ env.AUTODOCS_CHANGELOG_FILE }}" "${{ github.workspace }}/edu/autodocs"
 
+      ############################################################################################
+      # Send Pull Request
+      ############################################################################################
       - name: Create a PR
         uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04 # v4.2.3
         id: cpr
@@ -116,9 +139,12 @@ jobs:
             automated
           assignees: erikaheidi
 
+      ############################################################################################
+      # Notify Slack
+      ############################################################################################
       - name: "Send notification to Slack"
         if: ${{ steps.cpr.outputs.pull-request-number }}
-        uses: chainguard-dev/images-autodocs@1.1.1
+        uses: chainguard-dev/images-autodocs@1.1.2
         with:
           command: notify pullrequest
         env:
