@@ -39,7 +39,7 @@ All Chainguard Images come with a high-quality Software Bill Of Materials (SBOM)
 ```shell
 cosign download attestation \
   --predicate-type=https://spdx.dev/Document \
-  cgr.dev/chainguard/{{ title }} | jq -r .payload | base64 -d | jq
+  cgr.dev/chainguard/{{ title }} | jq -r .payload | base64 -d | jq .predicate
 ```
 By default, this command will fetch the SBOM assigned to the `latest` tag. You can also specify the tag you want to fetch the SBOM from.
 
