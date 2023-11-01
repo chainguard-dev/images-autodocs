@@ -11,7 +11,8 @@ env:
   AUTODOCS_OUTPUT: "${{ github.workspace }}/reference"
   AUTODOCS_CACHE: "${{ github.workspace }}/cache"
   AUTODOCS_CHANGELOG: "${{ github.workspace }}/reference"
-  AUTODOCS_CHANGELOG_FILE: "${{ github.workspace }}/changelog.md"
+  AUTODOCS_CHANGELOG_OUTPUT: "${ github.workspace }}/changelog.md"
+  AUTODOCS_CHANGELOG_FILE: "${ github.workspace }}/edu/autodocs/changelog.md"
   AUTODOCS_IGNORE_IMAGES: "alpine-base:k3s-images:k3s-embedded:source-controller:sdk:spire:musl-dynamic:nri-kube-events:nri-kubernetes:nri-prometheus:gcc-musl"
 jobs:
   main:
@@ -81,11 +82,10 @@ jobs:
       ############################################################################################
       # Set up Changelog
       ############################################################################################
-      - name: Copy current changelog to workdir
+      - name: Copy current changelog file to workdir
         run: |
-          cp "${{ github.workspace }}/edu/autodocs/changelog.md" \
-          "${{ github.workspace }}/changelog.md" && \
-          chmod 777 "${{ github.workspace }}/changelog.md"
+          cp "${{ env.AUTODOCS_CHANGELOG_FILE }}" "${{ env.AUTODOCS_CHANGELOG_OUTPUT }}" && \
+          chmod 777 "${{ env.AUTODOCS_CHANGELOG_OUTPUT }}"
 
       - name: Copy current reference docs to workdir (required for changelog)
         run: |
@@ -96,7 +96,7 @@ jobs:
       # Generate Docs
       ############################################################################################
       - name: Update the reference docs for Chainguard Images
-        uses: chainguard-dev/images-autodocs@1.1.2
+        uses: chainguard-dev/images-autodocs@1.1.3
         with:
           command: build images
 
@@ -113,12 +113,12 @@ jobs:
         run: |
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
           echo "CHANGELOG<<$EOF" >> $GITHUB_ENV
-          echo "`cat "${{ env.AUTODOCS_CHANGELOG_FILE }}" | sed '1,/#/!d' | sed -n '/#/!p'`" >> $GITHUB_ENV
+          echo "`cat "${{ env.AUTODOCS_CHANGELOG_OUTPUT }}" | sed '1,/#/!d' | sed -n '/#/!p'`" >> $GITHUB_ENV
           echo "$EOF" >> $GITHUB_ENV
 
       - name: "Copy updated changelog to autodocs folder"
         run: |
-          mv "${{ env.AUTODOCS_CHANGELOG_FILE }}" "${{ github.workspace }}/edu/autodocs"
+          mv "${{ env.AUTODOCS_CHANGELOG_OUTPUT }}" "${{ env.AUTODOCS_CHANGELOG_FILE }}"
 
       ############################################################################################
       # Send Pull Request
@@ -144,7 +144,7 @@ jobs:
       ############################################################################################
       - name: "Send notification to Slack"
         if: ${{ steps.cpr.outputs.pull-request-number }}
-        uses: chainguard-dev/images-autodocs@1.1.2
+        uses: chainguard-dev/images-autodocs@1.1.3
         with:
           command: notify pullrequest
         env:
