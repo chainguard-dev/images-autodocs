@@ -56,6 +56,19 @@ jobs:
         uses: sigstore/cosign-installer@v3.1.1
 
       ############################################################################################
+      # Set up Changelog
+      ############################################################################################
+      - name: Copy current changelog file to workdir
+        run: |
+          cp "${{ env.AUTODOCS_CHANGELOG_FILE }}" "${{ env.AUTODOCS_CHANGELOG_OUTPUT }}" && \
+          chmod 777 "${{ env.AUTODOCS_CHANGELOG_OUTPUT }}"
+
+      - name: Copy current reference docs to workdir (required for changelog)
+        run: |
+          cp -R "${{ github.workspace }}/edu/content/chainguard/chainguard-images/reference" "${{ github.workspace }}" && \
+          chmod -R 777 "${{ github.workspace }}/reference"
+          
+      ############################################################################################
       # Fetch Image Metadata
       ############################################################################################
       - name: Fetch images list
@@ -78,19 +91,6 @@ jobs:
               done
             done
           done
-
-      ############################################################################################
-      # Set up Changelog
-      ############################################################################################
-      - name: Copy current changelog file to workdir
-        run: |
-          cp "${{ env.AUTODOCS_CHANGELOG_FILE }} ${{ env.AUTODOCS_CHANGELOG_OUTPUT }}" && \
-          chmod 777 "${{ env.AUTODOCS_CHANGELOG_OUTPUT }}"
-
-      - name: Copy current reference docs to workdir (required for changelog)
-        run: |
-          cp -R "${{ github.workspace }}/edu/content/chainguard/chainguard-images/reference ${{ github.workspace }}" && \
-          chmod -R 777 "${{ github.workspace }}/reference"
 
       ############################################################################################
       # Generate Docs
