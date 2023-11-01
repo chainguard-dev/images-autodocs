@@ -11,8 +11,8 @@ env:
   AUTODOCS_OUTPUT: "${{ github.workspace }}/reference"
   AUTODOCS_CACHE: "${{ github.workspace }}/cache"
   AUTODOCS_CHANGELOG: "${{ github.workspace }}/reference"
-  AUTODOCS_CHANGELOG_OUTPUT: "${ github.workspace }}/changelog.md"
-  AUTODOCS_CHANGELOG_FILE: "${ github.workspace }}/edu/autodocs/changelog.md"
+  AUTODOCS_CHANGELOG_OUTPUT: "${{ github.workspace }}/changelog.md"
+  AUTODOCS_CHANGELOG_FILE: "${{ github.workspace }}/edu/autodocs/changelog.md"
   AUTODOCS_IGNORE_IMAGES: "alpine-base:k3s-images:k3s-embedded:source-controller:sdk:spire:musl-dynamic:nri-kube-events:nri-kubernetes:nri-prometheus:gcc-musl"
 jobs:
   main:
@@ -84,12 +84,12 @@ jobs:
       ############################################################################################
       - name: Copy current changelog file to workdir
         run: |
-          cp "${{ env.AUTODOCS_CHANGELOG_FILE }}" "${{ env.AUTODOCS_CHANGELOG_OUTPUT }}" && \
+          cp "${{ env.AUTODOCS_CHANGELOG_FILE }} ${{ env.AUTODOCS_CHANGELOG_OUTPUT }}" && \
           chmod 777 "${{ env.AUTODOCS_CHANGELOG_OUTPUT }}"
 
       - name: Copy current reference docs to workdir (required for changelog)
         run: |
-          cp -R "${{ github.workspace }}/edu/content/chainguard/chainguard-images/reference" "${{ github.workspace }}" && \
+          cp -R "${{ github.workspace }}/edu/content/chainguard/chainguard-images/reference ${{ github.workspace }}" && \
           chmod -R 777 "${{ github.workspace }}/reference"
 
       ############################################################################################
