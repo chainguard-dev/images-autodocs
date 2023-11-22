@@ -47,6 +47,10 @@ class ImagesController extends CommandController
         $this->info("Finished building.");
         $this->success($changelog->getChangesSummary(), true);
         if ($changelog->hasChanges()) {
+            $this->out("\nUpdating content timestamps...\n");
+            //update timestamps
+            frontmatter_update('date', date('Y-m-d H:i:s'), $changelog->newFiles);
+            frontmatter_update('lastmod', date('Y-m-d H:i:s'), $changelog->changedFiles);
             $this->out("\nBuilding changelog...\n");
             $changelogPage = new ChangelogPage($autodocs);
             $changelogPage->loadData(['newFiles' => $changelog->newFiles, 'changedFiles' => $changelog->changedFiles]);

@@ -44,6 +44,9 @@ class OverviewPage extends ReferencePage
             }
             # didn't find an image:readme 1:1 directory mapping, so look at image annotation for correct dir
             $fName = $image.".latest.json";
+            if (!array_key_exists($fName, $dataFeeds)) {
+                continue;
+            }
             $dataFeeds[$fName]->loadFile($this->autodocs->config['cache_dir'].'/'.$fName);
             $image_source = $dataFeeds[$fName]->json["predicate"]["annotations"]["org.opencontainers.image.source"];
             $image_source = explode("/", $image_source);

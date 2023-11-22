@@ -17,7 +17,8 @@
     "minicli/minicli": "^4.2",
     "minicli/command-help": "^1.0",
     "erikaheidi/autodocs": "^0.2",
-    "minicli/curly": "^0.2.2"
+    "minicli/curly": "^0.2.2",
+    "erikaheidi/parsed": "^0.3.7"
   },
   "require-dev": {
     "pestphp/pest": "^1.23",
