@@ -27,7 +27,7 @@ class OverviewPage extends ReferencePage
         }
 
         $readme = str_ireplace("# {$readme}", "", $readme);
-        $readme = preg_replace('/<!--(.*)-->(.*)<!--(.*)-->/Uis', '', $readme);
+        $readme = preg_replace('/<!--monopod:start-->(.*)<!--monopod:end-->/Uis', '', $readme);
 
         $this->readme = $readme;
     }
