@@ -44,7 +44,7 @@ class OverviewPage extends ReferencePage
             }
             # didn't find an image:readme 1:1 directory mapping, so look at image annotation for correct dir
             $fName = $image.".latest.json";
-            if (!array_key_exists($fName, $dataFeeds)) {
+            if ( ! array_key_exists($fName, $dataFeeds)) {
                 continue;
             }
             $dataFeeds[$fName]->loadFile($this->autodocs->config['cache_dir'].'/'.$fName);

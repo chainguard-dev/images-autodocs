@@ -9,10 +9,10 @@ function config_unfurl(string $envKey, string $defaultValue): array
     return explode(":", envconfig($envKey, $defaultValue));
 }
 
-function frontmatter_update(string $field, string $value, array $articles)
+function frontmatter_update(string $field, string $value, array $articles): void
 {
     foreach ($articles as $articleFile) {
-        if (!is_file($articleFile['path'])) {
+        if ( ! is_file($articleFile['path'])) {
             continue;
         }
         $articleContent = file_get_contents($articleFile['path']);
