@@ -11,15 +11,15 @@ function config_unfurl(string $envKey, string $defaultValue): array
 
 function frontmatter_update(string $field, string $value, array $articles)
 {
-    foreach ($articles as $articlePath) {
-        if (!is_file($articlePath)) {
+    foreach ($articles as $articleFile) {
+        if (!is_file($articleFile['path'])) {
             continue;
         }
-        $articleContent = file_get_contents($articlePath);
+        $articleContent = file_get_contents($articleFile['path']);
         $article = new Content($articleContent);
-
+        $article->parse(new \Parsed\ContentParser());
         $article->frontMatterSet($field, $value);
         $article->updateRaw();
-        file_put_contents($articlePath, $article->raw);
+        file_put_contents($articleFile['path'], $article->raw);
     }
 }
