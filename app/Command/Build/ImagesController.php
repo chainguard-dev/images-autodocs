@@ -29,17 +29,13 @@ class ImagesController extends CommandController
             return;
         }
 
-        foreach ($imagesList->json as $image) {
-            $imageName = $image['repo']['name'];
-            if (in_array($imageName, $autodocs->config['ignore_images'])) {
-                $this->out("\nSkipping image in ignore list: {$imageName}...\n");
-                continue;
+        if ($this->hasParam('image')) {
+            $this->buildDocsForImage($this->getParam('image'));
+        } else {
+            foreach ($imagesList->json as $image) {
+                $imageName = $image['repo']['name'];
+                $this->buildDocsForImage($imageName);
             }
-
-            $this->info("Building docs for {$imageName}...");
-            $autodocs->buildPages($this->getParam('pages') ?? "all", [
-                'image' => $imageName
-            ]);
         }
 
         //Build ChangelogPage
@@ -47,6 +43,10 @@ class ImagesController extends CommandController
         $this->info("Finished building.");
         $this->success($changelog->getChangesSummary(), true);
         if ($changelog->hasChanges()) {
+            $this->out("\nUpdating content timestamps...\n");
+            //update timestamps
+            frontmatter_update('date', date('Y-m-d H:i:s'), $changelog->newFiles);
+            frontmatter_update('lastmod', date('Y-m-d H:i:s'), $changelog->changedFiles);
             $this->out("\nBuilding changelog...\n");
             $changelogPage = new ChangelogPage($autodocs);
             $changelogPage->loadData(['newFiles' => $changelog->newFiles, 'changedFiles' => $changelog->changedFiles]);
@@ -54,5 +54,19 @@ class ImagesController extends CommandController
             $autodocs->storage->saveFile($saveChangelog, $changelogPage->getContent());
             $this->success("Changelog saved to {$saveChangelog}");
         }
+    }
+
+    private function buildDocsForImage(string $imageName): void
+    {
+        $autodocs = $this->getApp()->autodocs;
+        if (in_array($imageName, $autodocs->config['ignore_images'])) {
+            $this->out("\nSkipping image in ignore list: {$imageName}...\n");
+            return;
+        }
+
+        $this->info("Building docs for {$imageName}...");
+        $autodocs->buildPages($this->getParam('pages') ?? "all", [
+            'image' => $imageName
+        ]);
     }
 }
