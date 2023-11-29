@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Command\Build;
 
+use App\ImageChangelog;
 use App\Page\ChangelogPage;
-use Autodocs\Changelog;
 use Autodocs\DataFeed\JsonDataFeed;
 use Autodocs\Exception\NotFoundException;
 use autodocs\Service\AutodocsService;
@@ -17,7 +17,7 @@ class ImagesController extends CommandController
     {
         /** @var AutodocsService $autodocs */
         $autodocs = $this->getApp()->autodocs;
-        $changelog = new Changelog($autodocs->config['changelog']);
+        $changelog = new ImageChangelog($autodocs->config['changelog']);
         $changelog->capture();
 
         //get list of images
@@ -44,7 +44,7 @@ class ImagesController extends CommandController
         $this->success($changelog->getChangesSummary(), true);
         if ($changelog->hasChanges()) {
             $this->out("\nUpdating content timestamps...\n");
-            //update timestamps
+            //update article timestamps
             frontmatter_update('date', date('Y-m-d H:i:s'), $changelog->newFiles);
             frontmatter_update('lastmod', date('Y-m-d H:i:s'), $changelog->changedFiles);
             $this->out("\nBuilding changelog...\n");
