@@ -103,7 +103,7 @@ jobs:
       # Generate Docs
       ############################################################################################
       - name: Update the reference docs for Chainguard Images
-        uses: chainguard-dev/images-autodocs@1.2.1
+        uses: chainguard-dev/images-autodocs@1.2.2
         with:
           command: build images
 
@@ -151,7 +151,7 @@ jobs:
       ############################################################################################
       - name: "Send notification to Slack"
         if: ${{ steps.cpr.outputs.pull-request-number }}
-        uses: chainguard-dev/images-autodocs@1.2.1
+        uses: chainguard-dev/images-autodocs@1.2.2
         with:
           command: notify pullrequest
         env:
