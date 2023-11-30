@@ -45,8 +45,9 @@ class ImagesController extends CommandController
         if ($changelog->hasChanges()) {
             $this->out("\nUpdating content timestamps...\n");
             //update article timestamps
-            frontmatter_update('date', date('Y-m-d H:i:s'), $changelog->newFiles);
-            frontmatter_update('lastmod', date('Y-m-d H:i:s'), $changelog->changedFiles);
+            $now = date('Y-m-d H:i:s');
+            frontmatter_update(['date', 'lastmod'], [$now, $now], $changelog->newFiles);
+            frontmatter_update(['lastmod'], [$now], $changelog->changedFiles);
             $this->out("\nBuilding changelog...\n");
             $changelogPage = new ChangelogPage($autodocs);
             $changelogPage->loadData(['newFiles' => $changelog->newFiles, 'changedFiles' => $changelog->changedFiles]);

@@ -22,7 +22,7 @@ class ImageChangelog extends Changelog
             if ( ! is_dir($filename)) {
                 $article = new Content(file_get_contents($filename));
                 $article->parse($contentParser);
-                $content_md5 = md5($article->body_markdown);
+                $content_md5 = hash('sha256', $article->body_markdown);
             }
 
 
