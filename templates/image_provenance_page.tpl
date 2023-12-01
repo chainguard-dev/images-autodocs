@@ -27,10 +27,7 @@ The **{{ title }}** Chainguard Images are signed using Sigstore, and you can che
 The following command requires [cosign](https://docs.sigstore.dev/cosign/overview/) and [jq](https://stedolan.github.io/jq/) to be installed on your machine. It will pull detailed information about all signatures found for the provided image.
 
 ```shell
-cosign verify \
-  --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
-  --certificate-identity=https://github.com/chainguard-images/images/.github/workflows/release.yaml@refs/heads/main \
-  cgr.dev/chainguard/{{ title }} | jq
+cosign verify --certificate-oidc-issuer=https://token.actions.githubusercontent.com --certificate-identity=https://github.com/chainguard-images/images/.github/workflows/release.yaml@refs/heads/main cgr.dev/chainguard/{{ title }} | jq
 ```
 
 By default, this command will fetch signatures for the `latest` tag. You can also specify the tag you want to fetch signatures for.
@@ -46,7 +43,7 @@ The following [attestations](https://slsa.dev/attestation-model) for the {{ titl
 | `https://spdx.dev/Document` | Contains the image SBOM (Software Bill of Materials) in SPDX format. |
 
 
-To download an attestation, use the `cosign download attestation` command and provide both the predicate type and the build platform. For example, the following command will obtain the SBOM for the {{ title }} image on `linux/amd64`:
+To download an attestation, use the `cosign download attestation` command and provide both the predicate type and the build platform. For example, the following command will obtain the SBOM for the {{ title }} image on `unix/amd64`:
 
 ```shell
 cosign download attestation \
@@ -63,10 +60,10 @@ You can use the `cosign verify-attestation` command to check the signatures of t
 
 ```shell
 cosign verify-attestation \
-  --type https://spdx.dev/Document \
-  --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
-  --certificate-identity=https://github.com/chainguard-images/images/.github/workflows/release.yaml@refs/heads/main \
-  cgr.dev/chainguard/{{ title }}
+--type https://spdx.dev/Document \
+--certificate-oidc-issuer=https://token.actions.githubusercontent.com \
+--certificate-identity=https://github.com/chainguard-images/images/.github/workflows/release.yaml@refs/heads/main \
+cgr.dev/chainguard/{{ title }}
 ```
 
 This will pull in the signature for the attestation specified by the `--type` parameter, which in this case is the SPDX attestation. You should get output that verifies the SBOM attestation signature in cosign's transparency log:
