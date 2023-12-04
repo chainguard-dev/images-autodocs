@@ -17,7 +17,8 @@ class ImagesController extends CommandController
     {
         /** @var AutodocsService $autodocs */
         $autodocs = $this->getApp()->autodocs;
-        $changelog = new ImageChangelog($autodocs->config['changelog']);
+        copy_recursive($autodocs->config['changelog'], $autodocs->config['output']);
+        $changelog = new ImageChangelog($autodocs->config['output']);
         $changelog->capture();
 
         //get list of images
@@ -38,22 +39,23 @@ class ImagesController extends CommandController
             }
         }
 
-        //Build ChangelogPage
         $changelog->makeDiff($autodocs->config['output']);
         $this->info("Finished building.");
         $this->success($changelog->getChangesSummary(), true);
         if ($changelog->hasChanges()) {
             $this->out("\nUpdating content timestamps...\n");
-            //update article timestamps
-            $now = date('Y-m-d H:i:s');
-            frontmatter_update(['date', 'lastmod'], [$now, $now], $changelog->newFiles);
-            frontmatter_update(['lastmod'], [$now], $changelog->changedFiles);
+            $changelog->updateTimestamps();
             $this->out("\nBuilding changelog...\n");
             $changelogPage = new ChangelogPage($autodocs);
             $changelogPage->loadData(['newFiles' => $changelog->newFiles, 'changedFiles' => $changelog->changedFiles]);
             $saveChangelog = $changelogPage->getSavePath();
             $autodocs->storage->saveFile($saveChangelog, $changelogPage->getContent());
             $this->success("Changelog saved to {$saveChangelog}");
+        }
+
+        if ($autodocs->config['discard_unchanged']) {
+            $this->out("\nCleaning Up...\n");
+            $changelog->discardUnchanged();
         }
     }
 
