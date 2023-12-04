@@ -37,19 +37,19 @@ class ImageChangelog extends Changelog
 
     public function makeDiff(?string $monitoredPath = null): void
     {
-        if (!$monitoredPath) {
+        if ( ! $monitoredPath) {
             $monitoredPath = $this->monitoredPath;
         }
         $previous = $this->monitoredFiles;
         $this->registerFiles($monitoredPath);
 
         foreach ($this->monitoredFiles as $index => $file) {
-            if (!array_key_exists($index, $previous)) {
+            if ( ! array_key_exists($index, $previous)) {
                 $this->newFiles[] = $file;
                 continue;
             }
 
-            if ($previous[$index]['md5'] != $file['md5']) {
+            if ($previous[$index]['md5'] !== $file['md5']) {
                 $this->changedFiles[] = $file;
             }
 
