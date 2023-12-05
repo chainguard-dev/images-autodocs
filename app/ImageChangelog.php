@@ -51,6 +51,7 @@ class ImageChangelog extends Changelog
 
             if ($previous[$index]['md5'] !== $file['md5']) {
                 $this->changedFiles[] = $file;
+                continue;
             }
 
             $this->unchangedFiles[] = $file;
