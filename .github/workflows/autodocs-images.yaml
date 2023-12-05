@@ -70,11 +70,6 @@ jobs:
           cp "${{ env.AUTODOCS_CHANGELOG_FILE }}" "${{ env.AUTODOCS_CHANGELOG_OUTPUT }}" && \
           chmod 777 "${{ env.AUTODOCS_CHANGELOG_OUTPUT }}"
 
-      - name: Copy current reference docs to workdir (required for changelog)
-        run: |
-          cp -R "${{ github.workspace }}/edu/content/chainguard/chainguard-images/reference" "${{ github.workspace }}" && \
-          chmod -R 777 "${{ github.workspace }}/reference"
-
       ############################################################################################
       # Fetch Image Metadata
       ############################################################################################
@@ -103,7 +98,7 @@ jobs:
       # Generate Docs
       ############################################################################################
       - name: Update the reference docs for Chainguard Images
-        uses: chainguard-dev/images-autodocs@1.3.0
+        uses: chainguard-dev/images-autodocs@1.3.1
         with:
           command: build images
 
@@ -151,7 +146,7 @@ jobs:
       ############################################################################################
       - name: "Send notification to Slack"
         if: ${{ steps.cpr.outputs.pull-request-number }}
-        uses: chainguard-dev/images-autodocs@1.3.0
+        uses: chainguard-dev/images-autodocs@1.3.1
         with:
           command: notify pullrequest
         env:
