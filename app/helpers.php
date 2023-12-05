@@ -27,3 +27,20 @@ function frontmatter_update(array $fields, array $values, array $articles): void
         file_put_contents($articleFile['path'], $article->raw);
     }
 }
+
+function copy_recursive(string $source, string $dest): void
+{
+    foreach (glob($source.'/*') as $sourceFile) {
+        if (is_dir($sourceFile)) {
+            copy_recursive($sourceFile, $dest);
+            continue;
+        }
+
+        $destFile = str_replace($source, $dest, $sourceFile);
+        if ( ! is_dir(dirname($destFile))) {
+            mkdir(dirname($destFile), 0777, true);
+        }
+
+        copy($sourceFile, $destFile);
+    }
+}
