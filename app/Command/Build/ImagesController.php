@@ -18,7 +18,6 @@ class ImagesController extends CommandController
         /** @var AutodocsService $autodocs */
         $autodocs = $this->getApp()->autodocs;
         copy_recursive($autodocs->config['changelog'], $autodocs->config['output']);
-        //exit;
         $changelog = new ImageChangelog($autodocs->config['output']);
         $changelog->capture();
 

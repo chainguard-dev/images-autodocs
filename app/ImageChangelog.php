@@ -54,7 +54,7 @@ class ImageChangelog extends Changelog
                 continue;
             }
 
-            if ($file['isDir'] === "no") {
+            if ("no" === $file['isDir']) {
                 $this->unchangedFiles[] = $file;
             }
         }
@@ -71,7 +71,7 @@ class ImageChangelog extends Changelog
     {
         $directories = [];
         foreach ($this->unchangedFiles as $file) {
-            if ($file['isDir'] === "yes") {
+            if ("yes" === $file['isDir']) {
                 $directories[] = $file;
                 continue;
             }
@@ -79,7 +79,7 @@ class ImageChangelog extends Changelog
             unlink($file['path']);
         }
 
-        if (!empty($directories)) {
+        if ( ! empty($directories)) {
             foreach ($directories as $directory) {
                 rmdir($directory['path']);
             }

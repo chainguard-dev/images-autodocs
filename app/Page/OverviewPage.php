@@ -49,7 +49,7 @@ class OverviewPage extends ReferencePage
             }
 
             $dataFeeds[$fName]->loadFile($this->autodocs->config['cache_dir'].'/'.$fName);
-            if (empty($dataFeeds[$fName]->json) OR !key_exists('predicate', $dataFeeds[$fName]->json)) {
+            if (empty($dataFeeds[$fName]->json) || ! key_exists('predicate', $dataFeeds[$fName]->json)) {
                 continue;
             }
 
