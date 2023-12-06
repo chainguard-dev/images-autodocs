@@ -31,12 +31,12 @@ function frontmatter_update(array $fields, array $values, array $articles): void
 function copy_recursive(string $source, string $dest): void
 {
     foreach (glob($source.'/*') as $sourceFile) {
+        $destFile = str_replace($source, $dest, $sourceFile);
         if (is_dir($sourceFile)) {
-            copy_recursive($sourceFile, $dest);
+            copy_recursive($sourceFile, $destFile);
             continue;
         }
 
-        $destFile = str_replace($source, $dest, $sourceFile);
         if ( ! is_dir(dirname($destFile))) {
             mkdir(dirname($destFile), 0777, true);
         }

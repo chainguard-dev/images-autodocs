@@ -10,7 +10,7 @@ use Parsed\ContentParser;
 
 class ImageChangelog extends Changelog
 {
-    protected array $unchangedFiles;
+    protected array $unchangedFiles = [];
 
     public function registerFiles(string $monitoredPath): void
     {
@@ -54,7 +54,9 @@ class ImageChangelog extends Changelog
                 continue;
             }
 
-            $this->unchangedFiles[] = $file;
+            if ($file['isDir'] === "no") {
+                $this->unchangedFiles[] = $file;
+            }
         }
     }
 
@@ -67,13 +69,19 @@ class ImageChangelog extends Changelog
 
     public function discardUnchanged(): void
     {
+        $directories = [];
         foreach ($this->unchangedFiles as $file) {
-            if (is_dir($file['path'])) {
-                rmdir($file['path']);
+            if ($file['isDir'] === "yes") {
+                $directories[] = $file;
+                continue;
             }
 
-            if (is_file($file['path'])) {
-                unlink($file['path']);
+            unlink($file['path']);
+        }
+
+        if (!empty($directories)) {
+            foreach ($directories as $directory) {
+                rmdir($directory['path']);
             }
         }
     }
