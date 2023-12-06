@@ -11,7 +11,7 @@ env:
   AUTODOCS_OUTPUT: "${{ github.workspace }}/reference"
   AUTODOCS_CACHE: "${{ github.workspace }}/cache"
   AUTODOCS_TEMPLATES: "${{ github.workspace }}/autodocs/templates"
-  AUTODOCS_CHANGELOG: "${{ github.workspace }}/reference"
+  AUTODOCS_CHANGELOG: "${{ github.workspace }}/edu/content/chainguard/chainguard-images/reference"
   AUTODOCS_CHANGELOG_OUTPUT: "${{ github.workspace }}/changelog.md"
   AUTODOCS_CHANGELOG_FILE: "${{ github.workspace }}/edu/autodocs/changelog.md"
   AUTODOCS_IGNORE_IMAGES: "alpine-base:k3s-images:k3s-embedded:source-controller:sdk:spire:musl-dynamic:nri-kube-events:nri-kubernetes:nri-prometheus:gcc-musl:external-attacher:external-resizer:oidc-discovery-provider:kubernetes-dashboard-metrics-scraper:kustomize-controller:kyvernopre"
