@@ -47,7 +47,12 @@ class OverviewPage extends ReferencePage
             if ( ! array_key_exists($fName, $dataFeeds)) {
                 continue;
             }
+
             $dataFeeds[$fName]->loadFile($this->autodocs->config['cache_dir'].'/'.$fName);
+            if (empty($dataFeeds[$fName]->json) || ! key_exists('predicate', $dataFeeds[$fName]->json)) {
+                continue;
+            }
+
             $image_source = $dataFeeds[$fName]->json["predicate"]["annotations"]["org.opencontainers.image.source"];
             $image_source = explode("/", $image_source);
             $image = end($image_source);

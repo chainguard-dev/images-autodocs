@@ -86,6 +86,10 @@ class VariantsPage extends ReferencePage
         $packages = [];
         /** @var JsonDataFeed $variantFeed */
         foreach ($variants as $variant => $variantFeed) {
+            if (empty($variantFeed->json) || ! key_exists('predicate', $variantFeed->json)) {
+                continue;
+            }
+
             $config = $variantFeed->json['predicate'];
             $headers[] = $variant;
             $columns[] = [
