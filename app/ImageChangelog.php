@@ -54,6 +54,7 @@ class ImageChangelog extends Changelog
                 continue;
             }
 
+            //empty directories are not staged for commit, so we just need to delete the files.
             if ("no" === $file['isDir']) {
                 $this->unchangedFiles[] = $file;
             }
@@ -69,20 +70,8 @@ class ImageChangelog extends Changelog
 
     public function discardUnchanged(): void
     {
-        $directories = [];
         foreach ($this->unchangedFiles as $file) {
-            if ("yes" === $file['isDir']) {
-                $directories[] = $file;
-                continue;
-            }
-
             unlink($file['path']);
-        }
-
-        if ( ! empty($directories)) {
-            foreach ($directories as $directory) {
-                rmdir($directory['path']);
-            }
         }
     }
 }
