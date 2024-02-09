@@ -29,11 +29,11 @@ class OverviewPage extends ReferencePage
                 }
 
                 //readme not defined, try to find from annotation
-                $imageMeta = $this->autodocs->getDataFeed("$image.latest.json");
+                $imageMeta = $this->autodocs->getDataFeed("{$image}.latest.json");
                 $image_source = $imageMeta->json["predicate"]["annotations"]["org.opencontainers.image.source"];
                 $image_source = explode("/", $image_source);
                 $referenceImage = end($image_source);
-                if ($referenceImage != $image) {
+                if ($referenceImage !== $image) {
                     $this->findReadme($referenceImage);
                 }
             }
