@@ -9,11 +9,6 @@ use App\Page\VariantsPage;
 
 return [
     'autodocs' => [
-        // Where to look for image READMES
-        'images_sources' => config_unfurl(
-            'AUTODOCS_SOURCES',
-            __DIR__.'/../workdir/sources/images/images'
-        ),
         // Pages to Build
         'pages' => [
             OverviewPage::class,
@@ -32,7 +27,7 @@ return [
         // String containing list of images to skip building docs for, separated by a colon
         'ignore_images' => config_unfurl(
             'AUTODOCS_IGNORE_IMAGES',
-            'alpine-base:k3s-images:k3s-embedded:sdk:spire:musl-dynamic:nri-kube-events:nri-kubernetes:nri-prometheus:gcc-musl:source-controller'
+            'alpine-base:k3s-images:k3s-embedded:sdk:spire:musl-dynamic:nri-kube-events:nri-kubernetes:nri-prometheus:gcc-musl:source-controller:curl-dev:alpine-base'
         ),
         // Original files that should be used as base for changelog comparison
         'changelog' => envconfig('AUTODOCS_CHANGELOG', __DIR__.'/../workdir/original'),
