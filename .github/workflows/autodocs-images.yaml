@@ -7,14 +7,13 @@ on:
   workflow_dispatch:
 
 env:
-  AUTODOCS_SOURCES: "${{ github.workspace }}/images/images"
   AUTODOCS_OUTPUT: "${{ github.workspace }}/reference"
   AUTODOCS_CACHE: "${{ github.workspace }}/cache"
   AUTODOCS_TEMPLATES: "${{ github.workspace }}/autodocs/templates"
   AUTODOCS_CHANGELOG: "${{ github.workspace }}/edu/content/chainguard/chainguard-images/reference"
   AUTODOCS_CHANGELOG_OUTPUT: "${{ github.workspace }}/changelog.md"
   AUTODOCS_CHANGELOG_FILE: "${{ github.workspace }}/edu/autodocs/changelog.md"
-  AUTODOCS_IGNORE_IMAGES: "alpine-base:k3s-images:k3s-embedded:source-controller:sdk:spire:musl-dynamic:nri-kube-events:nri-kubernetes:nri-prometheus:gcc-musl:external-attacher:external-resizer:oidc-discovery-provider:kubernetes-dashboard-metrics-scraper:kustomize-controller:kyvernopre"
+  AUTODOCS_IGNORE_IMAGES: "alpine-base:k3s-images:k3s-embedded:source-controller:sdk:spire:musl-dynamic:nri-kube-events:nri-kubernetes:nri-prometheus:gcc-musl:external-attacher:external-resizer:oidc-discovery-provider:kubernetes-dashboard-metrics-scraper:kustomize-controller:kyvernopre:alpine-base:curl-dev"
 jobs:
   main:
     permissions:
@@ -36,13 +35,7 @@ jobs:
           repository: chainguard-dev/edu
           path: edu
 
-      - name: Checkout Images Monorepo
-        uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
-        with:
-          repository: chainguard-images/images
-          path: images
-
-      - name: Checkout Autodocs repo for up-to-date Templates
+      - name: Checkout Autodocs repo
         uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
         with:
           repository: chainguard-dev/images-autodocs
@@ -98,7 +91,7 @@ jobs:
       # Generate Docs
       ############################################################################################
       - name: Update the reference docs for Chainguard Images
-        uses: chainguard-dev/images-autodocs@1.3.2
+        uses: chainguard-dev/images-autodocs@1.3.3
         with:
           command: build images
 
@@ -146,7 +139,7 @@ jobs:
       ############################################################################################
       - name: "Send notification to Slack"
         if: ${{ steps.cpr.outputs.pull-request-number }}
-        uses: chainguard-dev/images-autodocs@1.3.2
+        uses: chainguard-dev/images-autodocs@1.3.3
         with:
           command: notify pullrequest
         env:

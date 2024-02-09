@@ -10,59 +10,39 @@ use Minicli\FileNotFoundException;
 class OverviewPage extends ReferencePage
 {
     public string $image;
-    public string $readme;
+
+    public function loadData(array $parameters = []): void
+    {
+        $this->image = $parameters['image'];
+    }
 
     /**
      * @throws FileNotFoundException
      */
-    public function loadData(array $parameters = []): void
-    {
-        $this->image = $parameters['image'];
-        $readme = $this->findReadme($this->image);
-
-        if ("" === $readme) {
-            $readme = $this->autodocs->stencil->applyTemplate('image_overview_fallback', [
-                'image' => $this->image
-            ]);
-        }
-
-        $readme = str_ireplace("# {$readme}", "", $readme);
-        $readme = preg_replace('/<!--monopod:start-->(.*)<!--monopod:end-->/Uis', '', $readme);
-
-        $this->readme = $readme;
-    }
-
     public function findReadme(string $image): string
     {
-        $dataFeeds = $this->autodocs->dataFeeds;
-        $readme = "";
-        $sources = $this->autodocs->config['images_sources'];
-        foreach ($sources as $sourcePath) {
-            if (is_dir($sourcePath.'/'.$image)) {
-                $readme = file_get_contents($sourcePath.'/'.$image.'/README.md');
-                break;
-            }
-            # didn't find an image:readme 1:1 directory mapping, so look at image annotation for correct dir
-            $fName = $image.".latest.json";
-            if ( ! array_key_exists($fName, $dataFeeds)) {
-                continue;
-            }
+        $imagesList = $this->autodocs->getDataFeed($this->autodocs->config['cache_images_file']);
+        foreach ($imagesList->json as $imageInfo) {
+            if ($imageInfo['repo']['name'] === $image) {
+                if (array_key_exists('readme', $imageInfo['repo'])) {
+                    return $imageInfo['repo']['readme'];
+                }
 
-            $dataFeeds[$fName]->loadFile($this->autodocs->config['cache_dir'].'/'.$fName);
-            if (empty($dataFeeds[$fName]->json) || ! key_exists('predicate', $dataFeeds[$fName]->json)) {
-                continue;
-            }
-
-            $image_source = $dataFeeds[$fName]->json["predicate"]["annotations"]["org.opencontainers.image.source"];
-            $image_source = explode("/", $image_source);
-            $image = end($image_source);
-
-            $parentReadme = $sourcePath.'/'.$image.'/README.md';
-            if (is_file($parentReadme)) {
-                $readme = file_get_contents($parentReadme);
+                //readme not defined, try to find from annotation
+                $imageMeta = $this->autodocs->getDataFeed("{$image}.latest.json");
+                $image_source = $imageMeta->json["predicate"]["annotations"]["org.opencontainers.image.source"];
+                $image_source = explode("/", $image_source);
+                $referenceImage = end($image_source);
+                if ($referenceImage !== $image) {
+                    $this->findReadme($referenceImage);
+                }
             }
         }
-        return $readme;
+
+        //no readme found, return fallback template
+        return $this->autodocs->stencil->applyTemplate('image_overview_fallback', [
+            'image' => $this->image
+        ]);
     }
 
     public function getName(): string
@@ -80,9 +60,14 @@ class OverviewPage extends ReferencePage
      */
     public function getContent(): string
     {
+        $readme = $this->findReadme($this->image);
+
+        $readme = str_ireplace("# {$readme}", "", $readme);
+        $readme = preg_replace('/<!--monopod:start-->(.*)<!--monopod:end-->/Uis', '', $readme);
+
         return $this->autodocs->stencil->applyTemplate('image_overview', [
             'title' => $this->image,
-            'content' => $this->readme
+            'content' => $readme
         ]);
     }
 }

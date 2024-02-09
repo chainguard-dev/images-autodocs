@@ -6,10 +6,10 @@ namespace App\Command\Build;
 
 use App\ImageChangelog;
 use App\Page\ChangelogPage;
-use Autodocs\DataFeed\JsonDataFeed;
-use Autodocs\Exception\NotFoundException;
 use autodocs\Service\AutodocsService;
 use Minicli\Command\CommandController;
+use Exception;
+use TypeError;
 
 class ImagesController extends CommandController
 {
@@ -21,12 +21,13 @@ class ImagesController extends CommandController
         $changelog = new ImageChangelog($autodocs->config['output']);
         $changelog->capture();
 
-        //get list of images
-        $imagesList = new JsonDataFeed();
         try {
-            $imagesList->loadFile($autodocs->config['cache_dir'].'/'.$autodocs->config['cache_images_file']);
-        } catch (NotFoundException $exception) {
-            $this->error("Cache file not found: ".$autodocs->config['cache_dir'].'/'.$autodocs->config['cache_images_file']);
+            $imagesList = $autodocs->getDataFeed($autodocs->config['cache_images_file']);
+        } catch (Exception $exception) {
+            $this->error("Error: ".$exception->getMessage());
+            return;
+        } catch (TypeError $error) {
+            $this->error("Error: ".$error->getMessage());
             return;
         }
 
