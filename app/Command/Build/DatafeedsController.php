@@ -41,7 +41,7 @@ class DatafeedsController extends CommandController
             $image = $images->get($imageInfo['repo']['name'], true);
             $image->tagsDev = $imageInfo['tags'];
             if (array_key_exists('readme',  $imageInfo['repo'])){
-                $image->readmeProd = $imageInfo['repo']['readme'];
+                $image->readmeDev = $imageInfo['repo']['readme'];
             }
             $image->variantsDev = $this->getImageConfigs($image->getName(), $cacheDev);
             $images->add($image);
