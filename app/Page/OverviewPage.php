@@ -41,7 +41,7 @@ class OverviewPage extends ReferencePage
 
         $readme = str_ireplace("# {$readme}", "", $readme);
         $readme = preg_replace('/<!--monopod:start-->(.*)<!--monopod:end-->/Uis', '', $readme);
-        
+
         return $this->autodocs->stencil->applyTemplate('image_overview', [
             'title' => $this->image,
             'content' => $readme

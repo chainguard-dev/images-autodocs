@@ -37,20 +37,12 @@ class TagsHistoryPage extends ReferencePage
     public function getContent(): string
     {
         $image = Image::loadFromDatafeed($this->autodocs->config['cache_dir'] . '/datafeeds/' . $this->image . ".json");
-        $content = "";
-
-        if (count($image->tagsDev)) {
-            $content = "## Development Tags\n\n";
-            $content .= $this->getTagsTable($image->tagsDev);
-        }
-
-        $content .= "\n## Production Tags\n\n";
-        $content .= $this->getTagsTable($image->tagsProd);
 
         return $this->autodocs->stencil->applyTemplate('image_tags_page', [
             'title' => $this->image,
             'description' => "Image Tags and History for the {$this->image} Chainguard Image",
-            'content' => $content,
+            'developer_tags' => count($image->tagsDev) ? $this->getTagsTable($image->tagsDev) : "This image doesn't have Developer versions currently available.",
+            'production_tags' => count($image->tagsProd) ? $this->getTagsTable($image->tagsProd) : "This image doesn't have Production versions currently available.",
         ]);
     }
 

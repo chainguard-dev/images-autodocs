@@ -1,5 +1,5 @@
 ---
-title: "{{ title }} Image Variants"
+title: "{{ title }} Image Details"
 type: "article"
 unlisted: true
 description: "{{ description }}"
@@ -14,11 +14,11 @@ toc: true
 
 {{< tabs >}}
 {{< tab title="Overview" active=false url="/chainguard/chainguard-images/reference/{{ title }}/" >}}
-{{< tab title="Variants" active=true url="/chainguard/chainguard-images/reference/{{ title }}/image_specs/" >}}
+{{< tab title="Details" active=true url="/chainguard/chainguard-images/reference/{{ title }}/image_specs/" >}}
 {{< tab title="Tags History" active=false url="/chainguard/chainguard-images/reference/{{ title }}/tags_history/" >}}
 {{< tab title="Provenance" active=false url="/chainguard/chainguard-images/reference/{{ title }}/provenance_info/" >}}
 {{</ tabs >}}
 
-This page shows detailed information about all public variants of the Chainguard **{{ title }}** Image.
+This page shows detailed information about the Chainguard **{{ title }}** Image.
 
 {{ content }}

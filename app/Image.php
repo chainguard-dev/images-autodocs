@@ -4,6 +4,7 @@ namespace App;
 
 use Autodocs\DataFeed\JsonDataFeed;
 use Autodocs\Exception\NotFoundException;
+use Autodocs\Mark;
 
 class Image
 {
@@ -13,8 +14,7 @@ class Image
     public string $readmeProd = "";
     public array $tagsDev = [];
     public array $tagsProd = [];
-    public array $variantsDev = [];
-    public array $variantsProd = [];
+    public array $variants = [];
 
     public function __construct(string $name)
     {
@@ -34,8 +34,7 @@ class Image
             'tagsProd' => $this->tagsProd,
             'readmeDev' => $this->readmeDev,
             'readmeProd' => $this->readmeProd,
-            'variantsDev' => $this->variantsDev,
-            'variantsProd' => $this->variantsProd
+            'variants' => $this->variants,
         ]);
     }
 
@@ -48,6 +47,23 @@ class Image
             return $this->readmeProd;
         }
         return $this->readmeDev;
+    }
+
+    public function getRegistryTagsTable(): string
+    {
+        $tagsDev = $tagsProd = [];
+        foreach ($this->tagsDev as $tag) {
+            $tagsDev[] = $tag['name'];
+        }
+        foreach ($this->tagsProd as $tag) {
+            $tagsProd[] = $tag['name'];
+        }
+        $rows = [
+            ['`cgr.dev/chainguard`', count($tagsDev) ? implode(', ', $tagsDev) : "No public tags are available for this image."],
+            ['`cgr.dev/chainguard-private`', count($tagsProd) ? implode(', ', $tagsProd) : "No production tags are available for this image."]
+        ];
+
+        return Mark::table($rows, ['Registry', 'Tags']);
     }
 
     /**
@@ -63,8 +79,7 @@ class Image
         $image->tagsProd = $imageDatafeed->json['tagsProd'];
         $image->readmeDev = $imageDatafeed->json['readmeDev'];
         $image->readmeProd = $imageDatafeed->json['readmeProd'];
-        $image->variantsDev = $imageDatafeed->json['variantsDev'];
-        $image->variantsProd = $imageDatafeed->json['variantsProd'];
+        $image->variants = $imageDatafeed->json['variants'];
 
         return $image;
     }

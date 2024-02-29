@@ -37,25 +37,24 @@ class DatafeedsController extends CommandController
         $cacheProd = $this->getApp()->autodocs->config['cache_dir'] . '/images-prod';
 
         $images = new ImageCollection();
-        foreach ($imagesDevList->json as $imageInfo) {
-            $image = $images->get($imageInfo['repo']['name'], true);
-            $image->tagsDev = $imageInfo['tags'];
-            if (array_key_exists('readme',  $imageInfo['repo'])){
-                $image->readmeDev = $imageInfo['repo']['readme'];
-            }
-            $image->variantsDev = $this->getImageConfigs($image->getName(), $cacheDev);
-            $images->add($image);
-            $autodocs->storage->saveFile($autodocs->config['cache_dir'] . '/datafeeds/' . $image->name . ".json", $image->getJson());
-        }
-
-
+        //all dev images are in the prod list, the opposite is not true. use prod images as source of truth
         foreach ($imagesProdList->json as $imageInfo) {
             $image = $images->get($imageInfo['repo']['name'], true);
             $image->tagsProd = $imageInfo['tags'];
             if (array_key_exists('readme',  $imageInfo['repo'])){
                 $image->readmeProd = $imageInfo['repo']['readme'];
             }
-            $image->variantsProd = $this->getImageConfigs($image->getName(), $cacheProd);
+            $image->variants = $this->getImageConfigs($image->getName(), $cacheProd);
+            $images->add($image);
+            $autodocs->storage->saveFile($autodocs->config['cache_dir'] . '/datafeeds/' . $image->name . ".json", $image->getJson());
+        }
+        //get complimentary information about public tags, readme
+        foreach ($imagesDevList->json as $imageInfo) {
+            $image = $images->get($imageInfo['repo']['name'], true);
+            $image->tagsDev = $imageInfo['tags'];
+            if (array_key_exists('readme',  $imageInfo['repo'])){
+                $image->readmeDev = $imageInfo['repo']['readme'];
+            }
             $images->add($image);
             $autodocs->storage->saveFile($autodocs->config['cache_dir'] . '/datafeeds/' . $image->name . ".json", $image->getJson());
         }
