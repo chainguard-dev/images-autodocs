@@ -33,7 +33,7 @@ class ProvenancePage extends ReferencePage
      */
     public function getContent(): string
     {
-        $image = Image::loadFromDatafeed($this->autodocs->config['cache_dir'] . '/datafeeds/' . $this->image . ".json");
+        $image = Image::loadFromDatafeed($this->autodocs->config['cache_dir'].'/datafeeds/'.$this->image.".json");
 
         return $this->autodocs->stencil->applyTemplate('image_provenance_page', [
             'title' => $this->image,

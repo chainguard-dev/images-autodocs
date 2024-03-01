@@ -8,7 +8,6 @@ use App\Image;
 use Autodocs\Exception\NotFoundException;
 use Autodocs\Mark;
 use Autodocs\Page\ReferencePage;
-use Exception;
 use DateTime;
 use Minicli\FileNotFoundException;
 
@@ -36,7 +35,7 @@ class TagsHistoryPage extends ReferencePage
      */
     public function getContent(): string
     {
-        $image = Image::loadFromDatafeed($this->autodocs->config['cache_dir'] . '/datafeeds/' . $this->image . ".json");
+        $image = Image::loadFromDatafeed($this->autodocs->config['cache_dir'].'/datafeeds/'.$this->image.".json");
 
         return $this->autodocs->stencil->applyTemplate('image_tags_page', [
             'title' => $this->image,

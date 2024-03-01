@@ -33,7 +33,7 @@ class OverviewPage extends ReferencePage
      */
     public function getContent(): string
     {
-        $image = Image::loadFromDatafeed($this->autodocs->config['cache_dir'] . '/datafeeds/' . $this->image . ".json");
+        $image = Image::loadFromDatafeed($this->autodocs->config['cache_dir'].'/datafeeds/'.$this->image.".json");
         $fallback = $this->autodocs->stencil->applyTemplate('image_overview_fallback', [
             'image' => $this->image
         ]);

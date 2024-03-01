@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App;
 
 use Autodocs\DataFeed\JsonDataFeed;
@@ -40,8 +42,8 @@ class Image
 
     public function getReadme(string $fallback): string
     {
-        if ($this->readmeDev == "" or empty($this->readmeDev)) {
-            if ($this->readmeProd == "" or empty ($this->readmeProd)) {
+        if ("" === $this->readmeDev || empty($this->readmeDev)) {
+            if ("" === $this->readmeProd || empty($this->readmeProd)) {
                 return $fallback;
             }
             return $this->readmeProd;

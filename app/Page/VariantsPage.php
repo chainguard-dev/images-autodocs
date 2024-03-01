@@ -8,7 +8,6 @@ use App\Image;
 use Autodocs\Mark;
 use Autodocs\Page\ReferencePage;
 use Exception;
-use TypeError;
 
 class VariantsPage extends ReferencePage
 {
@@ -45,7 +44,7 @@ class VariantsPage extends ReferencePage
             'Has a shell?',
         ];
 
-        $image = Image::loadFromDatafeed($this->autodocs->config['cache_dir'] . '/datafeeds/' . $this->image . ".json");
+        $image = Image::loadFromDatafeed($this->autodocs->config['cache_dir'].'/datafeeds/'.$this->image.".json");
         $packages = [];
 
         foreach ($image->variants as $variantName => $attestation) {

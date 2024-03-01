@@ -33,30 +33,30 @@ class DatafeedsController extends CommandController
             return;
         }
 
-        $cacheDev = $this->getApp()->autodocs->config['cache_dir'] . '/images-dev';
-        $cacheProd = $this->getApp()->autodocs->config['cache_dir'] . '/images-prod';
+        $cacheDev = $this->getApp()->autodocs->config['cache_dir'].'/images-dev';
+        $cacheProd = $this->getApp()->autodocs->config['cache_dir'].'/images-prod';
 
         $images = new ImageCollection();
         //all dev images are in the prod list, the opposite is not true. use prod images as source of truth
         foreach ($imagesProdList->json as $imageInfo) {
             $image = $images->get($imageInfo['repo']['name'], true);
             $image->tagsProd = $imageInfo['tags'];
-            if (array_key_exists('readme',  $imageInfo['repo'])){
+            if (array_key_exists('readme', $imageInfo['repo'])) {
                 $image->readmeProd = $imageInfo['repo']['readme'];
             }
             $image->variants = $this->getImageConfigs($image->getName(), $cacheProd);
             $images->add($image);
-            $autodocs->storage->saveFile($autodocs->config['cache_dir'] . '/datafeeds/' . $image->name . ".json", $image->getJson());
+            $autodocs->storage->saveFile($autodocs->config['cache_dir'].'/datafeeds/'.$image->name.".json", $image->getJson());
         }
         //get complimentary information about public tags, readme
         foreach ($imagesDevList->json as $imageInfo) {
             $image = $images->get($imageInfo['repo']['name'], true);
             $image->tagsDev = $imageInfo['tags'];
-            if (array_key_exists('readme',  $imageInfo['repo'])){
+            if (array_key_exists('readme', $imageInfo['repo'])) {
                 $image->readmeDev = $imageInfo['repo']['readme'];
             }
             $images->add($image);
-            $autodocs->storage->saveFile($autodocs->config['cache_dir'] . '/datafeeds/' . $image->name . ".json", $image->getJson());
+            $autodocs->storage->saveFile($autodocs->config['cache_dir'].'/datafeeds/'.$image->name.".json", $image->getJson());
         }
 
         $this->success("Finished building image Datafeeds based on cached data.");
@@ -69,7 +69,7 @@ class DatafeedsController extends CommandController
     {
         $variantsList = [];
 
-        foreach (glob($cachePath . '/*.json') as $imageConfig) {
+        foreach (glob($cachePath.'/*.json') as $imageConfig) {
             if (str_starts_with(basename($imageConfig), $image.'.latest')) {
 
                 list($imageName, $variantName, $extension) = explode('.', basename($imageConfig));

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App;
 
 class ImageCollection
@@ -33,7 +35,7 @@ class ImageCollection
         }
 
         if ($createNew) {
-             return new Image($imageName);
+            return new Image($imageName);
         }
 
         return null;

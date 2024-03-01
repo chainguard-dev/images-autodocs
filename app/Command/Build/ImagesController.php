@@ -41,7 +41,7 @@ class ImagesController extends CommandController
         if ($this->hasParam('image')) {
             $this->buildDocsForImage($this->getParam('image'));
         } else {
-            foreach (glob($autodocs->config['cache_dir'] . '/datafeeds/*.json') as $imageCache) {
+            foreach (glob($autodocs->config['cache_dir'].'/datafeeds/*.json') as $imageCache) {
                 $dataFeed = new JsonDataFeed();
                 $dataFeed->loadFile($imageCache);
                 $imageName = $dataFeed->json['name'];
