@@ -14,7 +14,7 @@ toc: true
 
 {{< tabs >}}
 {{< tab title="Overview" active=false url="/chainguard/chainguard-images/reference/{{ title }}/" >}}
-{{< tab title="Variants" active=false url="/chainguard/chainguard-images/reference/{{ title }}/image_specs/" >}}
+{{< tab title="Details" active=false url="/chainguard/chainguard-images/reference/{{ title }}/image_specs/" >}}
 {{< tab title="Tags History" active=false url="/chainguard/chainguard-images/reference/{{ title }}/tags_history/" >}}
 {{< tab title="Provenance" active=true url="/chainguard/chainguard-images/reference/{{ title }}/provenance_info/" >}}
 {{</ tabs >}}
@@ -29,7 +29,7 @@ Attestations are provided per image build, so you'll need to specify the correct
 {{ registryTags }}
 
 - `cgr.dev/chainguard` - the Public Registry contains our **Developer Images**, which typically comprise the `latest*` versions of an image.
-- `cgr.dev/chainguard-private` - the Private/Dedicated Registry contains our **[Production Images](https://www.chainguard.dev/chainguard-images)**, which include all versioned tags of an image and special images that are not available in the public registry (including FIPS images and other custom builds).
+- `cgr.dev/chainguard-private` - the Private/Dedicated Registry contains our **Production Images**, which include all versioned tags of an image and special images that are not available in the public registry (including FIPS images and other custom builds).
 
 The commands listed on this page will default to the `latest` tag, but you can specify a different tag to fetch attestations for.
 
@@ -114,7 +114,7 @@ cosign verify-attestation \
 cgr.dev/chainguard-private/{{ title }}
 ```
 
-This will pull in the signature for the attestation specified by the `--type` parameter, which in this case is the SPDX attestation. You should get output that verifies the SBOM attestation signature in cosign's transparency log:
+This will pull in the signature for the attestation specified by the `--type` parameter, which in this case is the SPDX attestation. You will receive output that verifies the SBOM attestation signature in cosign's transparency log:
 
 ```
 Verification for cgr.dev/chainguard/{{ title }} --

@@ -14,7 +14,7 @@ toc: true
 
 {{< tabs >}}
 {{< tab title="Overview" active=false url="/chainguard/chainguard-images/reference/{{ title }}/" >}}
-{{< tab title="Variants" active=false url="/chainguard/chainguard-images/reference/{{ title }}/image_specs/" >}}
+{{< tab title="Details" active=false url="/chainguard/chainguard-images/reference/{{ title }}/image_specs/" >}}
 {{< tab title="Tags History" active=true url="/chainguard/chainguard-images/reference/{{ title }}/tags_history/" >}}
 {{< tab title="Provenance" active=false url="/chainguard/chainguard-images/reference/{{ title }}/provenance_info/" >}}
 {{</ tabs >}}
@@ -29,6 +29,6 @@ The Public Registry contains our **Developer Images**, which typically comprise 
 {{ developer_tags }}
 
 ### Private/Dedicated Registry
-The Private/Dedicated Registry contains our **[Production Images](https://www.chainguard.dev/chainguard-images)**, which include all versioned tags of an image and special images that are not available in the public registry (including FIPS images and other custom builds).
+The Private/Dedicated Registry contains our **Production Images**, which include all versioned tags of an image and special images that are not available in the public registry (including FIPS images and other custom builds).
 
 {{ production_tags }}

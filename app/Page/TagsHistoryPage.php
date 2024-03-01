@@ -41,8 +41,8 @@ class TagsHistoryPage extends ReferencePage
         return $this->autodocs->stencil->applyTemplate('image_tags_page', [
             'title' => $this->image,
             'description' => "Image Tags and History for the {$this->image} Chainguard Image",
-            'developer_tags' => count($image->tagsDev) ? $this->getTagsTable($image->tagsDev) : "This image doesn't have Developer versions currently available.",
-            'production_tags' => count($image->tagsProd) ? $this->getTagsTable($image->tagsProd) : "This image doesn't have Production versions currently available.",
+            'developer_tags' => count($image->tagsDev) ? $this->getTagsTable($image->tagsDev) : "Currently, there are no Developer versions of this image available.",
+            'production_tags' => count($image->tagsProd) ? $this->getTagsTable($image->tagsProd) : "Currently, there are no Production versions of this image available.",
         ]);
     }
 
