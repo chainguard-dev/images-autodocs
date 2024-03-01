@@ -1,6 +1,6 @@
 Minimal **{{ image }}** images with nightly builds.
 
-## Get it!
+## Download this Image
 
 ```
 docker pull cgr.dev/chainguard/{{ image }}:latest

@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Page;
 
+use App\Image;
+use Autodocs\Exception\NotFoundException;
 use Autodocs\Mark;
 use Autodocs\Page\ReferencePage;
-use Exception;
 use DateTime;
+use Minicli\FileNotFoundException;
 
 class TagsHistoryPage extends ReferencePage
 {
@@ -27,12 +29,19 @@ class TagsHistoryPage extends ReferencePage
         return $this->image.'/tags_history.md';
     }
 
+    /**
+     * @throws FileNotFoundException
+     * @throws NotFoundException
+     */
     public function getContent(): string
     {
+        $image = Image::loadFromDatafeed($this->autodocs->config['cache_dir'].'/datafeeds/'.$this->image.".json");
+
         return $this->autodocs->stencil->applyTemplate('image_tags_page', [
             'title' => $this->image,
             'description' => "Image Tags and History for the {$this->image} Chainguard Image",
-            'content' => $this->getTagsTable(),
+            'developer_tags' => count($image->tagsDev) ? $this->getTagsTable($image->tagsDev) : "Currently, there are no Developer versions of this image available.",
+            'production_tags' => count($image->tagsProd) ? $this->getTagsTable($image->tagsProd) : "Currently, there are no Production versions of this image available.",
         ]);
     }
 
@@ -48,27 +57,8 @@ class TagsHistoryPage extends ReferencePage
         return ($date1 < $date2) ? -1 : 1;
     }
 
-    public function getTagsForImage(string $imageName)
+    public function getTagsTable(array $imageTags, array $onlyTags = [], $relativeTime = false): string
     {
-        try {
-            $imagesList = $this->autodocs->getDataFeed('images-tags.json');
-        } catch (Exception $e) {
-            return "";
-        }
-
-        foreach ($imagesList->json as $image) {
-            if ($image['repo']['name'] === $imageName) {
-                return $image['tags'];
-            }
-        }
-
-        return [];
-    }
-
-    public function getTagsTable(array $onlyTags = [], $relativeTime = false): string
-    {
-        $imageTags = $this->getTagsForImage($this->image);
-
         usort($imageTags, [TagsHistoryPage::class, "orderTags"]);
         $imageTags = array_reverse($imageTags);
 

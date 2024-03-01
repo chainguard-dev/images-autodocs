@@ -18,7 +18,7 @@ toc: true
 
 {{< tabs >}}
 {{< tab title="Overview" active=true url="/chainguard/chainguard-images/reference/{{ title }}/" >}}
-{{< tab title="Variants" active=false url="/chainguard/chainguard-images/reference/{{ title }}/image_specs/" >}}
+{{< tab title="Details" active=false url="/chainguard/chainguard-images/reference/{{ title }}/image_specs/" >}}
 {{< tab title="Tags History" active=false url="/chainguard/chainguard-images/reference/{{ title }}/tags_history/" >}}
 {{< tab title="Provenance" active=false url="/chainguard/chainguard-images/reference/{{ title }}/provenance_info/" >}}
 {{</ tabs >}}

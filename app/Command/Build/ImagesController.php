@@ -6,6 +6,8 @@ namespace App\Command\Build;
 
 use App\ImageChangelog;
 use App\Page\ChangelogPage;
+use Autodocs\DataFeed\JsonDataFeed;
+use Autodocs\Exception\NotFoundException;
 use autodocs\Service\AutodocsService;
 use Minicli\Command\CommandController;
 use Exception;
@@ -13,6 +15,9 @@ use TypeError;
 
 class ImagesController extends CommandController
 {
+    /**
+     * @throws NotFoundException
+     */
     public function handle(): void
     {
         /** @var AutodocsService $autodocs */
@@ -21,6 +26,7 @@ class ImagesController extends CommandController
         $changelog = new ImageChangelog($autodocs->config['output']);
         $changelog->capture();
 
+        /*
         try {
             $imagesList = $autodocs->getDataFeed($autodocs->config['cache_images_file']);
         } catch (Exception $exception) {
@@ -29,13 +35,16 @@ class ImagesController extends CommandController
         } catch (TypeError $error) {
             $this->error("Error: ".$error->getMessage());
             return;
-        }
+        }*/
+
 
         if ($this->hasParam('image')) {
             $this->buildDocsForImage($this->getParam('image'));
         } else {
-            foreach ($imagesList->json as $image) {
-                $imageName = $image['repo']['name'];
+            foreach (glob($autodocs->config['cache_dir'].'/datafeeds/*.json') as $imageCache) {
+                $dataFeed = new JsonDataFeed();
+                $dataFeed->loadFile($imageCache);
+                $imageName = $dataFeed->json['name'];
                 $this->buildDocsForImage($imageName);
             }
         }

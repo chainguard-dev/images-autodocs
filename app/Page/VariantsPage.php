@@ -4,31 +4,14 @@ declare(strict_types=1);
 
 namespace App\Page;
 
-use Autodocs\DataFeed\JsonDataFeed;
+use App\Image;
 use Autodocs\Mark;
 use Autodocs\Page\ReferencePage;
 use Exception;
-use TypeError;
 
 class VariantsPage extends ReferencePage
 {
     public string $image;
-
-    public static array $allowedTags = [
-        'latest',
-        'latest-dev',
-        'latest-debug',
-        'latest-fpm',
-        'latest-fpm-dev',
-        'latest-glibc',
-        'latest-glibc-dev',
-        'latest-musl',
-        'latest-musl-dev',
-        'latest-root',
-        'latest-root-dev',
-        'latest-nonroot',
-        'latest-nonroot-dev'
-    ];
 
     public function loadData(array $parameters = []): void
     {
@@ -43,26 +26,6 @@ class VariantsPage extends ReferencePage
     public function getSavePath(): string
     {
         return $this->image.'/image_specs.md';
-    }
-
-    public function getImageVariants(): array
-    {
-        $variantsList = [];
-        $dataFeeds = $this->autodocs->dataFeeds;
-        /** @var JsonDataFeed $dataFeed */
-        foreach ($dataFeeds as $name => $dataFeed) {
-            if (str_starts_with($name, $this->image.'.latest')) {
-                list($imageName, $variantName, $extension) = explode('.', $name);
-                try {
-                    $dataFeed->loadFile($this->autodocs->config['cache_dir'].'/'.$name);
-                    $variantsList[$variantName] = $dataFeed;
-                } catch (TypeError $e) {
-                    //json might have issues. skip
-                }
-            }
-        }
-
-        return $variantsList;
     }
 
     /**
@@ -81,17 +44,13 @@ class VariantsPage extends ReferencePage
             'Has a shell?',
         ];
 
-
-        $variants = $this->getImageVariants();
+        $image = Image::loadFromDatafeed($this->autodocs->config['cache_dir'].'/datafeeds/'.$this->image.".json");
         $packages = [];
-        /** @var JsonDataFeed $variantFeed */
-        foreach ($variants as $variant => $variantFeed) {
-            if (empty($variantFeed->json) || ! key_exists('predicate', $variantFeed->json)) {
-                continue;
-            }
 
-            $config = $variantFeed->json['predicate'];
-            $headers[] = $variant;
+        foreach ($image->variants as $variantName => $attestation) {
+
+            $headers[] = $variantName;
+            $config = $attestation['predicate'];
             $columns[] = [
                 $this->getDefaultUser($config),
                 $this->getEntrypoint($config),
@@ -104,16 +63,16 @@ class VariantsPage extends ReferencePage
             //build packages array
             foreach ($config['contents']['packages'] as $dep) {
                 $split = explode("=", $dep);
-                $packages[$split[0]][] = $variant;
+                $packages[$split[0]][] = $variantName;
             }
         }
 
-        $content .= $this->getVariantsSection($this->image, $variants, $columns, $headers);
+        $content .= $this->getVariantsSection($this->image, $image->variants, $columns, $headers);
         $content .= "\n".$this->getDependenciesSection($packages, $headers);
 
         return $this->autodocs->stencil->applyTemplate('image_specs_page', [
             'title' => $this->image,
-            'description' => "Detailed information about the public {$this->image} Chainguard Image variants",
+            'description' => "Detailed information about the public {$this->image} Chainguard Image.",
             'content' => $content,
         ]);
     }
@@ -186,20 +145,7 @@ class VariantsPage extends ReferencePage
 
     public function getVariantsSection(string $image, array $variants, array $columns, array $headers): string
     {
-        $content = "## Variants Compared\n";
-
-        //check variants
-        $number = (1 === sizeof($variants)) ? "one public variant" : sizeof($variants)." public variants";
-
-        $content .= sprintf(
-            "The **%s** Chainguard Image currently has %s: %s",
-            $image,
-            $number,
-            "\n\n- `".implode("`\n- `", array_keys($variants))."`\n\n"
-        );
-
-        $content .= "The table has detailed information about each of these variants.\n\n";
-
+        $content = "";
         $tableRows = [];
         for ($i = 0; $i < sizeof($columns[0]); $i++) {
             $row = [];
