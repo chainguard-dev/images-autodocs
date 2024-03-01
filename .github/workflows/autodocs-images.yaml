@@ -29,7 +29,7 @@ jobs:
       ############################################################################################
       - name: Set up workdir
         run: |
-          mkdir -m 777 -p "${{ env.AUTODOCS_OUTPUT }}" "${{ env.AUTODOCS_CACHE }}"
+          mkdir -m 777 -p "${{ env.AUTODOCS_OUTPUT }}" "${{ env.AUTODOCS_CACHE }}" "${{ env.AUTODOCS_CACHE }}"/images-prod
 
       - name: Checkout Destination Repo
         uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
