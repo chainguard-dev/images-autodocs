@@ -13,7 +13,7 @@ env:
   AUTODOCS_CHANGELOG: "${{ github.workspace }}/edu/content/chainguard/chainguard-images/reference"
   AUTODOCS_CHANGELOG_OUTPUT: "${{ github.workspace }}/changelog.md"
   AUTODOCS_CHANGELOG_FILE: "${{ github.workspace }}/edu/autodocs/changelog.md"
-  AUTODOCS_IGNORE_IMAGES: "alpine-base:k3s-images:k3s-embedded:source-controller:sdk:spire:musl-dynamic:nri-kube-events:nri-kubernetes:nri-prometheus:gcc-musl:external-attacher:external-resizer:oidc-discovery-provider:kubernetes-dashboard-metrics-scraper:kustomize-controller:kyvernopre:alpine-base:curl-dev"
+  AUTODOCS_IGNORE_IMAGES: "scanner-test:alpine-base:k3s-images:k3s-embedded:source-controller:sdk:spire:musl-dynamic:nri-kube-events:nri-kubernetes:nri-prometheus:gcc-musl:external-attacher:external-resizer:oidc-discovery-provider:kubernetes-dashboard-metrics-scraper:kustomize-controller:kyvernopre:alpine-base:curl-dev"
 
 jobs:
   main:
@@ -29,7 +29,7 @@ jobs:
       ############################################################################################
       - name: Set up workdir
         run: |
-          mkdir -m 777 -p "${{ env.AUTODOCS_OUTPUT }}" "${{ env.AUTODOCS_CACHE }}" "${{ env.AUTODOCS_CACHE }}"/images-prod
+          mkdir -m 777 -p "${{ env.AUTODOCS_OUTPUT }}" "${{ env.AUTODOCS_CACHE }}" "${{ env.AUTODOCS_CACHE }}"/images-prod "${{ env.AUTODOCS_CACHE }}"/datafeeds
 
       - name: Checkout Destination Repo
         uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
@@ -67,8 +67,8 @@ jobs:
       ############################################################################################
       - name: Fetch images list
         run: |
-          chainctl img ls --group "${{ secrets.CHAINCTL_GROUP_PUBLIC }}" -ojson > "${{ env.AUTODOCS_CACHE }}/images-tags-dev.json"
-          chainctl img ls --group "${{ secrets.CHAINCTL_GROUP_PRIVATE }}" -ojson > "${{ env.AUTODOCS_CACHE }}/images-tags-prod.json"
+          chainctl img ls --parent "${{ secrets.CHAINCTL_GROUP_PUBLIC }}" -ojson > "${{ env.AUTODOCS_CACHE }}/images-tags-dev.json" && \
+          chainctl img ls --parent "${{ secrets.CHAINCTL_GROUP_PRIVATE }}" -ojson > "${{ env.AUTODOCS_CACHE }}/images-tags-prod.json"
 
       - name: Fetch images metadata
         run: |
