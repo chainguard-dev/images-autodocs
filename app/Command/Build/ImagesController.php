@@ -10,8 +10,6 @@ use Autodocs\DataFeed\JsonDataFeed;
 use Autodocs\Exception\NotFoundException;
 use autodocs\Service\AutodocsService;
 use Minicli\Command\CommandController;
-use Exception;
-use TypeError;
 
 class ImagesController extends CommandController
 {
@@ -25,18 +23,6 @@ class ImagesController extends CommandController
         copy_recursive($autodocs->config['changelog'], $autodocs->config['output']);
         $changelog = new ImageChangelog($autodocs->config['output']);
         $changelog->capture();
-
-        /*
-        try {
-            $imagesList = $autodocs->getDataFeed($autodocs->config['cache_images_file']);
-        } catch (Exception $exception) {
-            $this->error("Error: ".$exception->getMessage());
-            return;
-        } catch (TypeError $error) {
-            $this->error("Error: ".$error->getMessage());
-            return;
-        }*/
-
 
         if ($this->hasParam('image')) {
             $this->buildDocsForImage($this->getParam('image'));
@@ -72,7 +58,7 @@ class ImagesController extends CommandController
     private function buildDocsForImage(string $imageName): void
     {
         $autodocs = $this->getApp()->autodocs;
-        if (in_array($imageName, $autodocs->config['ignore_images'])) {
+        if (in_array($imageName, $autodocs->config['ignore_images']) || str_starts_with($imageName, "request-")) {
             $this->out("\nSkipping image in ignore list: {$imageName}...\n");
             return;
         }

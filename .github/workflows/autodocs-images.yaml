@@ -13,7 +13,7 @@ env:
   AUTODOCS_CHANGELOG: "${{ github.workspace }}/edu/content/chainguard/chainguard-images/reference"
   AUTODOCS_CHANGELOG_OUTPUT: "${{ github.workspace }}/changelog.md"
   AUTODOCS_CHANGELOG_FILE: "${{ github.workspace }}/edu/autodocs/changelog.md"
-  AUTODOCS_IGNORE_IMAGES: "scanner-test:alpine-base:k3s-images:k3s-embedded:source-controller:sdk:spire:musl-dynamic:nri-kube-events:nri-kubernetes:nri-prometheus:gcc-musl:external-attacher:external-resizer:oidc-discovery-provider:kubernetes-dashboard-metrics-scraper:kustomize-controller:kyvernopre:alpine-base:curl-dev"
+  AUTODOCS_IGNORE_IMAGES: "minio-fips-client:scanner-test:alpine-base:k3s-images:k3s-embedded:source-controller:sdk:spire:musl-dynamic:nri-kube-events:nri-kubernetes:nri-prometheus:gcc-musl:external-attacher:external-resizer:oidc-discovery-provider:kubernetes-dashboard-metrics-scraper:kustomize-controller:kyvernopre:alpine-base:curl-dev"
 
 jobs:
   main:
@@ -89,7 +89,7 @@ jobs:
       # Build Json Datafeeds
       ############################################################################################
       - name: Build Image Datafeeds
-        uses: chainguard-dev/images-autodocs@1.4.0
+        uses: chainguard-dev/images-autodocs@1.4.1
         with:
           command: build datafeeds
 
@@ -97,7 +97,7 @@ jobs:
       # Generate Docs
       ############################################################################################
       - name: Update the reference docs for Chainguard Images
-        uses: chainguard-dev/images-autodocs@1.4.0
+        uses: chainguard-dev/images-autodocs@1.4.1
         with:
           command: build images
 
@@ -152,7 +152,7 @@ jobs:
       ############################################################################################
       - name: "Send notification to Slack"
         if: ${{ steps.cpr.outputs.pull-request-number }}
-        uses: chainguard-dev/images-autodocs@1.4.0
+        uses: chainguard-dev/images-autodocs@1.4.1
         with:
           command: notify pullrequest
         env:
