@@ -24,6 +24,7 @@ class ImagesController extends CommandController
         $changelog = new ImageChangelog($autodocs->config['output']);
         $changelog->capture();
 
+        $invalidImages = [];
         if ($this->hasParam('image')) {
             $this->buildDocsForImage($this->getParam('image'));
         } else {
@@ -31,6 +32,11 @@ class ImagesController extends CommandController
                 $dataFeed = new JsonDataFeed();
                 $dataFeed->loadFile($imageCache);
                 $imageName = $dataFeed->json['name'];
+                if (!count($dataFeed->json['tagsDev']) AND !count($dataFeed->json['tagsProd'])) {
+                    $invalidImages[] = $imageName;
+                    $this->info("Image has no tags, skipping...");
+                    continue;
+                }
                 $this->buildDocsForImage($imageName);
             }
         }
@@ -38,6 +44,10 @@ class ImagesController extends CommandController
         $changelog->makeDiff($autodocs->config['output']);
         $this->info("Finished building.");
         $this->success($changelog->getChangesSummary(), true);
+        if (count($invalidImages)) {
+            $this->info(sprintf("A total of %s images containing no tags were ignored: %s", count($invalidImages), implode(', ', $invalidImages)));
+        }
+
         if ($changelog->hasChanges()) {
             $this->out("\nUpdating content timestamps...\n");
             $changelog->updateTimestamps();

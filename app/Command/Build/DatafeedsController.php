@@ -33,7 +33,6 @@ class DatafeedsController extends CommandController
             return;
         }
 
-        $cacheDev = $this->getApp()->autodocs->config['cache_dir'].'/images-dev';
         $cacheProd = $this->getApp()->autodocs->config['cache_dir'].'/images-prod';
 
         $images = new ImageCollection();
