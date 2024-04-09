@@ -32,7 +32,7 @@ class ImagesController extends CommandController
                 $dataFeed = new JsonDataFeed();
                 $dataFeed->loadFile($imageCache);
                 $imageName = $dataFeed->json['name'];
-                if (!count($dataFeed->json['tagsDev']) AND !count($dataFeed->json['tagsProd'])) {
+                if ( ! count($dataFeed->json['tagsDev']) && ! count($dataFeed->json['tagsProd'])) {
                     $invalidImages[] = $imageName;
                     $this->info("Image has no tags, skipping...");
                     continue;
