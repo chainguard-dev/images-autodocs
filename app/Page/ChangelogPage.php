@@ -59,8 +59,7 @@ class ChangelogPage extends ReferencePage
         }
 
         if (count($changed)) {
-            $newChangelog .= "\n\nUpdated Docs:\n\n- ";
-            $newChangelog .= implode("\n- ", $changed);
+            $newChangelog .= "\n\nA total of **".count($changed)."** documents were updated.";
         }
 
         return $newChangelog."\n\n".$changelog;

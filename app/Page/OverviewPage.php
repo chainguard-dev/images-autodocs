@@ -39,8 +39,16 @@ class OverviewPage extends ReferencePage
         ]);
         $readme = $image->getReadme($fallback);
 
+        // removes header and monopod section
         $readme = str_ireplace("# {$readme}", "", $readme);
         $readme = preg_replace('/<!--monopod:start-->(.*)<!--monopod:end-->/Uis', '', $readme);
+
+        $download = $this->autodocs->stencil->applyTemplate('image_overview_download', [
+            'registry' => count($image->tagsDev) ? 'cgr.dev/chainguard' : 'cgr.dev/chainguard-private',
+            'image' => $this->image
+        ]);
+        // overwrites download section
+        $readme = preg_replace('/<!--getting:start-->(.*)<!--getting:end-->/Uis', $download, $readme);
 
         return $this->autodocs->stencil->applyTemplate('image_overview', [
             'title' => $this->image,
