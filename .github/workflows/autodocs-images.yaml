@@ -89,7 +89,7 @@ jobs:
       # Build Json Datafeeds
       ############################################################################################
       - name: Build Image Datafeeds
-        uses: chainguard-dev/images-autodocs@1.4.1
+        uses: chainguard-dev/images-autodocs@1.5.0
         with:
           command: build datafeeds
 
@@ -97,7 +97,7 @@ jobs:
       # Generate Docs
       ############################################################################################
       - name: Update the reference docs for Chainguard Images
-        uses: chainguard-dev/images-autodocs@1.4.1
+        uses: chainguard-dev/images-autodocs@1.5.0
         with:
           command: build images
 
@@ -152,7 +152,7 @@ jobs:
       ############################################################################################
       - name: "Send notification to Slack"
         if: ${{ steps.cpr.outputs.pull-request-number }}
-        uses: chainguard-dev/images-autodocs@1.4.1
+        uses: chainguard-dev/images-autodocs@1.5.0
         with:
           command: notify pullrequest
         env:
