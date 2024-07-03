@@ -47,7 +47,7 @@ jobs:
         uses: chainguard-dev/actions/setup-gitsign@main
 
       - name: Set up Chainctl
-        uses: chainguard-dev/actions/setup-chainctl@main
+        uses: chainguard-dev/setup-chainctl@main
         with:
           identity: "${{ secrets.CHAINCTL_IDENTITY }}"
 
@@ -67,8 +67,8 @@ jobs:
       ############################################################################################
       - name: Fetch images list
         run: |
-          chainctl img ls --parent "${{ secrets.CHAINCTL_GROUP_PUBLIC }}" -ojson > "${{ env.AUTODOCS_CACHE }}/images-tags-dev.json" && \
-          chainctl img ls --parent "${{ secrets.CHAINCTL_GROUP_PRIVATE }}" -ojson > "${{ env.AUTODOCS_CACHE }}/images-tags-prod.json"
+          chainctl img ls --parent "${{ secrets.CHAINCTL_GROUP_PUBLIC }}" -ojson --updated-within=178h > "${{ env.AUTODOCS_CACHE }}/images-tags-dev.json" && \
+          chainctl img ls --parent "${{ secrets.CHAINCTL_GROUP_PRIVATE }}" -ojson --updated-within=178h > "${{ env.AUTODOCS_CACHE }}/images-tags-prod.json"
 
       - name: Fetch images metadata
         run: |
